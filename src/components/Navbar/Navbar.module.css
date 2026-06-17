@@ -1,0 +1,282 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 1000;
+  padding: 0 24px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.logo {
+  font-family: 'Outfit', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.logoText {
+  color: var(--text-primary);
+}
+
+.navLinks {
+  list-style: none;
+  display: flex;
+  gap: 24px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 992px) {
+  .navLinks {
+    display: none; /* Hide standard links on mobile */
+  }
+}
+
+.navLink a {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+  padding: 8px 4px;
+  border-bottom: 2px solid transparent;
+}
+
+.navLink a:hover, .activeLink a {
+  color: var(--primary-color);
+}
+
+.activeLink a {
+  border-bottom-color: var(--primary-color);
+}
+
+.searchWrapper {
+  flex-grow: 1;
+  max-width: 400px;
+}
+
+@media (max-width: 600px) {
+  .searchWrapper {
+    display: none;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.actionBtn {
+  position: relative;
+  font-size: 22px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: var(--border-radius-full);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.actionBtn:hover {
+  background-color: var(--bg-color);
+  color: var(--primary-color);
+}
+
+.badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: var(--accent-color);
+  color: var(--text-primary);
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-full);
+  border: 2px solid var(--card-bg);
+}
+
+/* User Account Menu & Dropdown */
+.profileMenu {
+  position: relative;
+}
+
+.avatarBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: var(--border-radius-full);
+  transition: background-color var(--transition-fast);
+}
+
+.avatarBtn:hover {
+  background-color: var(--bg-color);
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--border-radius-full);
+  object-fit: cover;
+  border: 2px solid var(--border-color);
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .userName {
+    display: none;
+  }
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  width: 220px;
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  animation: dropdownFade 0.2s ease forwards;
+}
+
+.dropdownHeader {
+  padding: 8px 16px 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.userEmail {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.userRoleBadge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: var(--border-radius-sm);
+  margin-top: 4px;
+}
+
+.role_customer { background-color: #DBEAFE; color: #1E40AF; }
+.role_vendor { background-color: #FEF3C7; color: #92400E; }
+.role_admin { background-color: #D1FAE5; color: #065F46; }
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  font-size: 14px;
+  color: var(--text-primary);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.dropdownItem:hover {
+  background-color: var(--bg-color);
+  color: var(--primary-color);
+}
+
+.dropdownDivider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 6px 0;
+}
+
+.logoutBtn {
+  color: #EF4444;
+}
+
+.logoutBtn:hover {
+  background-color: #FEF2F2;
+  color: #EF4444;
+}
+
+.guestBtns {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.loginLink {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  transition: color var(--transition-fast);
+}
+
+.loginLink:hover {
+  color: var(--primary-color);
+}
+
+.registerLink {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--card-bg);
+  background-color: var(--primary-color);
+  padding: 8px 16px;
+  border-radius: var(--border-radius-full);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.registerLink:hover {
+  background-color: var(--secondary-color);
+  transform: translateY(-1px);
+}
+
+/* Demo Role Switcher Dropdown */
+.demoSwitcher {
+  background-color: var(--bg-color);
+  border: 1px dashed var(--primary-color);
+  padding: 4px 8px;
+  border-radius: var(--border-radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
