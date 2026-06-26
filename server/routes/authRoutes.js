@@ -42,24 +42,61 @@ router.post('/register', async (req, res) => {
   }
 });
 
+// Code-configured credentials
+const CODE_CREDENTIALS = {
+  admin: {
+    email: 'admin@test.com',
+    password: 'password123'
+  },
+  vendor: {
+    email: 'vendor@test.com',
+    password: 'password123'
+  }
+};
+
 // @desc    Auth user & get token
 // @route   POST /api/auth/login
 router.post('/login', async (req, res) => {
   const { email, password, role } = req.body;
   try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid email or password' });
-    }
+    let user;
+    const isAdminCred = email === CODE_CREDENTIALS.admin.email && password === CODE_CREDENTIALS.admin.password;
+    const isVendorCred = email === CODE_CREDENTIALS.vendor.email && password === CODE_CREDENTIALS.vendor.password;
 
-    // Role check to align with sandbox switcher
-    if (role && user.role !== role) {
-      return res.status(401).json({ message: `Invalid credentials for role: ${role}` });
-    }
+    if (isAdminCred || isVendorCred) {
+      const targetRole = isAdminCred ? 'admin' : 'vendor';
 
-    const isMatch = await user.matchPassword(password);
-    if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      if (role && role !== targetRole) {
+        return res.status(401).json({ message: `Invalid credentials for role: ${role}` });
+      }
+
+      user = await User.findOne({ email });
+      if (!user) {
+        // Auto-create user with correct role if not exists in database
+        user = await User.create({
+          name: targetRole === 'admin' ? 'Super Admin' : 'TechNova Solutions',
+          email,
+          password,
+          role: targetRole,
+          storeName: targetRole === 'vendor' ? 'TechNova Solutions' : undefined,
+          status: 'Approved',
+          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop'
+        });
+      }
+    } else {
+      user = await User.findOne({ email });
+      if (!user) {
+        return res.status(401).json({ message: 'Invalid email or password' });
+      }
+
+      if (role && user.role !== role) {
+        return res.status(401).json({ message: `Invalid credentials for role: ${role}` });
+      }
+
+      const isMatch = await user.matchPassword(password);
+      if (!isMatch) {
+        return res.status(401).json({ message: 'Invalid email or password' });
+      }
     }
 
     if (user.status === 'Suspended') {

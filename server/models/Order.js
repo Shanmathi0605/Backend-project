@@ -34,6 +34,10 @@ const orderSchema = new mongoose.Schema({
   items: [orderItemSchema],
   timeline: [timelineStepSchema],
   date: { type: String, default: () => new Date().toISOString().split('T')[0] }
-}, { timestamps: true });
+}, { 
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
 
 export default mongoose.model('Order', orderSchema);

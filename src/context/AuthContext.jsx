@@ -10,6 +10,18 @@ export const useAuth = () => {
   return context;
 };
 
+// Code-configured credentials
+export const CODE_CREDENTIALS = {
+  admin: {
+    email: 'admin@test.com',
+    password: 'password123'
+  },
+  vendor: {
+    email: 'vendor@test.com',
+    password: 'password123'
+  }
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,23 +40,34 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password, role = 'customer') => {
     setLoading(true);
     try {
+      // Determine role automatically if it matches code-configured credentials
+      let loginRole = role;
+      const isAdminCred = email === CODE_CREDENTIALS.admin.email && password === CODE_CREDENTIALS.admin.password;
+      const isVendorCred = email === CODE_CREDENTIALS.vendor.email && password === CODE_CREDENTIALS.vendor.password;
+
+      if (isAdminCred) {
+        loginRole = 'admin';
+      } else if (isVendorCred) {
+        loginRole = 'vendor';
+      }
+
       if (isMockEnabled) {
         await new Promise((resolve) => setTimeout(resolve, 800));
         const mockUser = {
-          id: role === 'admin' ? 'admin-1' : role === 'vendor' ? 'vendor-1' : 'customer-1',
+          id: loginRole === 'admin' ? 'admin-1' : loginRole === 'vendor' ? 'vendor-1' : 'customer-1',
           email,
-          name: role === 'admin' ? 'Super Admin' : role === 'vendor' ? 'Premium Vendor Store' : 'John Doe',
-          role,
+          name: loginRole === 'admin' ? 'Super Admin' : loginRole === 'vendor' ? 'Premium Vendor Store' : 'John Doe',
+          role: loginRole,
           avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop',
-          storeName: role === 'vendor' ? 'TechNova Solutions' : undefined,
+          storeName: loginRole === 'vendor' ? 'TechNova Solutions' : undefined,
         };
         localStorage.setItem('app_token', 'mock_jwt_token_header.' + btoa(JSON.stringify(mockUser)));
         localStorage.setItem('app_user', JSON.stringify(mockUser));
         setUser(mockUser);
-        addToast(`Logged in successfully as ${role}!`, 'success');
+        addToast(`Logged in successfully as ${loginRole}!`, 'success');
         return mockUser;
       } else {
-        const res = await api.post('/auth/login', { email, password, role });
+        const res = await api.post('/auth/login', { email, password, role: loginRole });
         const loggedUser = {
           id: res.data.id || res.data._id,
           name: res.data.name,

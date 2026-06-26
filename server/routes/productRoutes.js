@@ -102,6 +102,11 @@ router.get('/', async (req, res) => {
 // @route   GET /api/products/:id
 router.get('/:id', async (req, res) => {
   try {
+    // Validate that id is a valid MongoDB ObjectId before querying
+    const { isValidObjectId } = await import('mongoose');
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
     const product = await Product.findById(req.params.id);
     if (product) {
       res.json(product);

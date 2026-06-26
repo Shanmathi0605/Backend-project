@@ -9,7 +9,6 @@ import { WishlistProvider } from './context/WishlistContext';
 
 // Layouts
 import PublicLayout from './layouts/PublicLayout';
-import CustomerLayout from './layouts/CustomerLayout';
 import VendorLayout from './layouts/VendorLayout';
 import AdminLayout from './layouts/AdminLayout';
 
@@ -23,18 +22,11 @@ import StaticPages from './pages/public/StaticPages';
 
 // Customer Pages
 import {
-  CustomerDashboard,
-  CustomerProfile,
-  CustomerAddresses,
-  CustomerWishlist,
   CustomerCart,
   CustomerCheckout,
   CustomerPayment,
   CustomerOrderSuccess,
-  CustomerOrders,
-  CustomerOrderDetails,
-  CustomerReviews,
-  CustomerSettings
+  CustomerOrderDetails
 } from './pages/customer/CustomerPortal';
 
 // Vendor Pages
@@ -79,6 +71,11 @@ function App() {
                   <Route path="categories" element={<CategoriesBrands />} />
                   <Route path="brands" element={<CategoriesBrands />} />
                   <Route path="deals" element={<Shop />} /> {/* Deals filters in Shop */}
+                  <Route path="cart" element={<CustomerCart />} />
+                  <Route path="checkout" element={<CustomerCheckout />} />
+                  <Route path="payment" element={<CustomerPayment />} />
+                  <Route path="order-success" element={<CustomerOrderSuccess />} />
+                  <Route path="order-details/:id" element={<CustomerOrderDetails />} />
                   
                   {/* Static CMS Pages */}
                   <Route path="about" element={<StaticPages />} />
@@ -92,22 +89,6 @@ function App() {
                   <Route path="register" element={<AuthPages />} />
                   <Route path="forgot-password" element={<AuthPages />} />
                   <Route path="reset-password" element={<AuthPages />} />
-                </Route>
-
-                {/* Customer Dashboard Portal */}
-                <Route path="/customer" element={<CustomerLayout />}>
-                  <Route index element={<CustomerDashboard />} />
-                  <Route path="profile" element={<CustomerProfile />} />
-                  <Route path="addresses" element={<CustomerAddresses />} />
-                  <Route path="wishlist" element={<CustomerWishlist />} />
-                  <Route path="cart" element={<CustomerCart />} />
-                  <Route path="checkout" element={<CustomerCheckout />} />
-                  <Route path="payment" element={<CustomerPayment />} />
-                  <Route path="order-success" element={<CustomerOrderSuccess />} />
-                  <Route path="orders" element={<CustomerOrders />} />
-                  <Route path="order-details/:id" element={<CustomerOrderDetails />} />
-                  <Route path="reviews" element={<CustomerReviews />} />
-                  <Route path="settings" element={<CustomerSettings />} />
                 </Route>
 
                 {/* Vendor Dashboard Portal */}

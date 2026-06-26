@@ -13,6 +13,7 @@ import { productService } from '../../services/product';
 import ProductCard from '../../components/ProductCard/ProductCard';
 import Loader from '../../components/Loader/Loader';
 import EmptyState from '../../components/EmptyState/EmptyState';
+import { api } from '../../services/api';
 import styles from './CustomerPortal.module.css';
 
 // ----------------------------------------------------
@@ -353,7 +354,7 @@ export const CustomerCart = () => {
 
   if (cartItems.length === 0) {
     return (
-      <div>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px 24px' }}>
         <h1 className={styles.title} style={{ marginBottom: '24px' }}>Shopping Cart</h1>
         <EmptyState
           title="Your Cart is Empty"
@@ -366,7 +367,7 @@ export const CustomerCart = () => {
   }
 
   return (
-    <div>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px 24px' }}>
       <h1 className={styles.title} style={{ marginBottom: '24px' }}>Shopping Cart</h1>
       <div className={styles.cartLayout}>
         {/* Cart items list */}
@@ -374,19 +375,20 @@ export const CustomerCart = () => {
           {cartItems.map((item) => {
             const p = item.product;
             const price = p.price * (1 - (p.discount || 0) / 100);
+            const pId = p.id || p._id; // Fallback for old carts
             return (
-              <div key={p.id} className={styles.cartItem}>
+              <div key={pId} className={styles.cartItem}>
                 <img src={p.images[0]} alt={p.name} className={styles.cartImg} />
                 <div className={styles.cartInfo}>
-                  <h4 className={styles.cartTitle}><Link to={`/product/${p.id}`}>{p.name}</Link></h4>
+                  <h4 className={styles.cartTitle}><Link to={`/product/${pId}`}>{p.name}</Link></h4>
                   <p className={styles.cartPrice}>${price.toFixed(2)}</p>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <button onClick={() => updateQuantity(p.id, item.quantity - 1)} style={{ width: '32px', height: '32px', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>-</button>
+                  <button onClick={() => updateQuantity(pId, item.quantity - 1)} style={{ width: '32px', height: '32px', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>-</button>
                   <span style={{ fontWeight: '600', minWidth: '24px', textAlign: 'center' }}>{item.quantity}</span>
-                  <button onClick={() => updateQuantity(p.id, item.quantity + 1)} style={{ width: '32px', height: '32px', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                  <button onClick={() => updateQuantity(pId, item.quantity + 1)} style={{ width: '32px', height: '32px', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
                 </div>
-                <button onClick={() => removeFromCart(p.id)} className={styles.cartRemove} title="Remove Item">
+                <button onClick={() => removeFromCart(pId)} className={styles.cartRemove} title="Remove Item">
                   <FiTrash2 />
                 </button>
               </div>
@@ -434,7 +436,7 @@ export const CustomerCart = () => {
             </button>
           </form>
 
-          <button onClick={() => navigate('/customer/checkout')} className={styles.btnPrimary} style={{ width: '100%', marginTop: '8px' }}>
+          <button onClick={() => navigate('/checkout')} className={styles.btnPrimary} style={{ width: '100%', marginTop: '8px' }}>
             Proceed to Checkout
           </button>
         </div>
@@ -447,6 +449,7 @@ export const CustomerCart = () => {
 // 6. CHECKOUT FORM
 // ----------------------------------------------------
 export const CustomerCheckout = () => {
+  const { user, loading: authLoading } = useAuth();
   const { cartItems, subtotal, discountAmount, shipping, total } = useCart();
   const { addToast } = useToast();
   const navigate = useNavigate();
@@ -457,6 +460,20 @@ export const CustomerCheckout = () => {
   const [zip, setZip] = useState('');
   const [phone, setPhone] = useState('');
 
+  // Guard: redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate('/login?redirect=checkout', { replace: true });
+    }
+  }, [authLoading, user, navigate]);
+
+  // Guard: if cart is empty, send back to cart page
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      navigate('/cart', { replace: true });
+    }
+  }, [cartItems.length, navigate]);
+
   const handleCheckoutSubmit = (e) => {
     e.preventDefault();
     if (!name || !street || !city || !zip) {
@@ -466,7 +483,7 @@ export const CustomerCheckout = () => {
 
     // Save shipping details locally to read during payment step
     localStorage.setItem('checkout_shipping', JSON.stringify({ name, street, city, zip, phone }));
-    navigate('/customer/payment');
+    navigate('/payment');
   };
 
   return (
@@ -544,7 +561,7 @@ export const CustomerCheckout = () => {
 // 7. PAYMENT GATEWAY SPLASH
 // ----------------------------------------------------
 export const CustomerPayment = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { cartItems, total, clearCart } = useCart();
   const { addToast } = useToast();
   const navigate = useNavigate();
@@ -554,6 +571,23 @@ export const CustomerPayment = () => {
   const [cardExpiry, setCardExpiry] = useState('');
   const [cardCvv, setCardCvv] = useState('');
   const [processing, setProcessing] = useState(false);
+
+  // Guard: redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate('/login?redirect=payment', { replace: true });
+    }
+  }, [authLoading, user, navigate]);
+
+  // Guard: if cart is empty (e.g. page refresh after order), send back to cart
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      navigate('/cart', { replace: true });
+    }
+  }, [cartItems.length, navigate]);
+
+  // Wait for auth to resolve before rendering
+  if (authLoading || !user) return <Loader text="Verifying session..." />;
 
   const handlePayment = async (e) => {
     e.preventDefault();
@@ -577,16 +611,66 @@ export const CustomerPayment = () => {
         items: cartItems
       };
 
-      const placed = await orderService.placeOrder(orderData);
-      // Save order details locally so Success page reads it
-      localStorage.setItem('last_order_placed', JSON.stringify(placed));
-      clearCart();
-      addToast('Payment authorization successful!', 'success');
-      navigate('/customer/order-success');
+      if (paymentMethod === 'Razorpay') {
+        // 1. Request a Razorpay order from the backend
+        const res = await api.post('/payment/razorpay-order', { amount: total });
+        const rzOrder = res.data;
+
+        // 2. Configure Razorpay Options
+        const options = {
+          key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+          amount: rzOrder.amount,
+          currency: rzOrder.currency,
+          name: 'NovaCart Multi-Vendor',
+          description: 'Order Payment',
+          order_id: rzOrder.id,
+          handler: async (response) => {
+            setProcessing(true);
+            try {
+              // 3. Verify signature on backend
+              await api.post('/payment/verify', {
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+              });
+
+              // 4. Place the order in our database
+              const placed = await orderService.placeOrder(orderData);
+              localStorage.setItem('last_order_placed', JSON.stringify(placed));
+              clearCart();
+              addToast('Payment completed successfully via Razorpay!', 'success');
+              navigate('/order-success');
+            } catch (verifyErr) {
+              addToast(verifyErr.message || 'Payment verification failed', 'error');
+            } finally {
+              setProcessing(false);
+            }
+          },
+          prefill: {
+            name: user?.name || '',
+            email: user?.email || '',
+          },
+          theme: {
+            color: '#2563EB'
+          }
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+      } else {
+        // Cash on Delivery or Credit Card Mock
+        const placed = await orderService.placeOrder(orderData);
+        localStorage.setItem('last_order_placed', JSON.stringify(placed));
+        clearCart();
+        addToast(paymentMethod === 'Cash on Delivery' ? 'Order placed successfully!' : 'Payment authorization successful!', 'success');
+        navigate('/order-success');
+      }
     } catch (err) {
-      addToast('Payment gateway authorization error', 'error');
+      addToast(err.message || 'Payment gateway authorization error', 'error');
     } finally {
-      setProcessing(false);
+      if (paymentMethod !== 'Razorpay') {
+        setProcessing(false);
+      }
     }
   };
 
@@ -598,11 +682,11 @@ export const CustomerPayment = () => {
         <form onSubmit={handlePayment} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div>
             <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px' }}>Select Payment Tier</label>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-              {['Credit Card', 'Cash on Delivery'].map(method => (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '12px' }}>
+              {['Credit Card', 'Cash on Delivery', 'Razorpay'].map(method => (
                 <button
-                  type="button"
                   key={method}
+                  type="button"
                   onClick={() => setPaymentMethod(method)}
                   style={{
                     padding: '12px',
@@ -645,13 +729,19 @@ export const CustomerPayment = () => {
             </p>
           )}
 
+          {paymentMethod === 'Razorpay' && (
+            <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: '1.5', fontStyle: 'italic' }}>
+              You will be redirected to the secure Razorpay payment gateway to complete your transaction. You can pay using UPI, credit/debit cards, net banking, or wallets.
+            </p>
+          )}
+
           <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-secondary)' }}>E-Wallet Billing Amount:</span>
             <span style={{ fontSize: '20px', fontWeight: '700', color: 'var(--primary-color)' }}>${total.toFixed(2)}</span>
           </div>
 
           <button type="submit" disabled={processing} style={{ width: '100%', backgroundColor: 'var(--primary-color)', color: 'var(--card-bg)', padding: '14px', borderRadius: 'var(--border-radius-md)', fontWeight: '600', cursor: 'pointer' }}>
-            {processing ? 'Authorizing Transactions...' : `Pay $${total.toFixed(2)}`}
+            {processing ? 'Authorizing Transactions...' : paymentMethod === 'Razorpay' ? 'Proceed with Razorpay' : `Pay $${total.toFixed(2)}`}
           </button>
         </form>
       </div>
@@ -665,15 +755,24 @@ export const CustomerPayment = () => {
 export const CustomerOrderSuccess = () => {
   const navigate = useNavigate();
   const [order, setOrder] = useState(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('last_order_placed');
     if (saved) {
       setOrder(JSON.parse(saved));
     }
+    setLoaded(true);
   }, []);
 
-  if (!order) return <Loader text="Loading order parameters..." />;
+  // If no order data found, redirect to home
+  useEffect(() => {
+    if (loaded && !order) {
+      navigate('/', { replace: true });
+    }
+  }, [loaded, order, navigate]);
+
+  if (!loaded || !order) return <Loader text="Loading order details..." />;
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh', padding: '24px' }}>
@@ -691,8 +790,8 @@ export const CustomerOrderSuccess = () => {
         </div>
 
         <div style={{ display: 'flex', gap: '12px' }}>
-          <button onClick={() => navigate('/customer/orders')} className={styles.btnPrimary} style={{ width: '100%' }}>
-            View Order Histories
+          <button onClick={() => navigate('/')} className={styles.btnPrimary} style={{ width: '100%' }}>
+            Go to Homepage
           </button>
           <button onClick={() => navigate('/shop')} className={styles.btnSecondary} style={{ width: '100%' }}>
             Continue Shopping
@@ -897,7 +996,7 @@ export const CustomerReviews = () => {
             <div key={rev.id} style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', padding: '24px', borderRadius: 'var(--border-radius-lg)' }}>
               <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Product: <strong>{rev.product.name}</strong></p>
               <div style={{ display: 'flex', gap: '4px', margin: '8px 0', color: 'var(--accent-color)' }}>
-                {[...Array(rev.rating)].map((_, i) => <FaStar key={i} />)}
+                {[...Array(rev.rating)].map((_, i) => <FiStar key={i} style={{ fill: 'currentColor' }} />)}
               </div>
               <p style={{ fontSize: '14px', fontStyle: 'italic', color: 'var(--text-primary)' }}>"{rev.comment}"</p>
               <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '8px' }}>Submitted Date: {rev.date}</p>

@@ -66,7 +66,7 @@ export const ProductDetails = () => {
 
   const handleBuyNow = () => {
     addToCart(product, quantity);
-    navigate('/customer/cart');
+    navigate('/cart');
   };
 
   const handleReviewSubmit = async (e) => {

@@ -114,9 +114,6 @@ export const Navbar = () => {
             </button>
             {roleMenuOpen && (
               <div className={styles.dropdown} style={{ width: '180px' }}>
-                <button className={styles.dropdownItem} onClick={() => handleDemoRoleSwitch('customer')}>
-                  Customer View
-                </button>
                 <button className={styles.dropdownItem} onClick={() => handleDemoRoleSwitch('vendor')}>
                   Vendor View
                 </button>
@@ -136,7 +133,7 @@ export const Navbar = () => {
             {wishlistItems.length > 0 && <span className={styles.badge}>{wishlistItems.length}</span>}
           </Link>
 
-          <Link to="/customer/cart" className={styles.actionBtn} title="Shopping Cart">
+          <Link to="/cart" className={styles.actionBtn} title="Shopping Cart">
             <FiShoppingBag />
             {cartCount > 0 && <span className={styles.badge}>{cartCount}</span>}
           </Link>
@@ -161,19 +158,6 @@ export const Navbar = () => {
                         </span>
                       </div>
                     </div>
-                    {user.role === 'customer' && (
-                      <>
-                        <Link to="/customer" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
-                          My Dashboard
-                        </Link>
-                        <Link to="/customer/profile" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
-                          My Profile
-                        </Link>
-                        <Link to="/customer/orders" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
-                          My Orders
-                        </Link>
-                      </>
-                    )}
                     {user.role === 'vendor' && (
                       <>
                         <Link to="/vendor" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>

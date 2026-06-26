@@ -24,6 +24,10 @@ const productSchema = new mongoose.Schema({
   vendorName: { type: String, required: true },
   isApproved: { type: Boolean, default: true },
   reviews: [reviewSchema]
-}, { timestamps: true });
+}, { 
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
 
 export default mongoose.model('Product', productSchema);

@@ -13,17 +13,7 @@ export const Sidebar = ({ isOpen }) => {
 
   const getMenuLinks = () => {
     switch (role) {
-      case 'customer':
-        return [
-          { label: 'Dashboard', path: '/customer', icon: <FiGrid className={styles.icon} />, end: true },
-          { label: 'My Profile', path: '/customer/profile', icon: <FiUser className={styles.icon} /> },
-          { label: 'Addresses', path: '/customer/addresses', icon: <FiMapPin className={styles.icon} /> },
-          { label: 'Wishlist', path: '/customer/wishlist', icon: <FiHeart className={styles.icon} /> },
-          { label: 'Shopping Cart', path: '/customer/cart', icon: <FiShoppingBag className={styles.icon} /> },
-          { label: 'My Orders', path: '/customer/orders', icon: <FiList className={styles.icon} /> },
-          { label: 'Reviews & Ratings', path: '/customer/reviews', icon: <FiStar className={styles.icon} /> },
-          { label: 'Account Settings', path: '/customer/settings', icon: <FiSettings className={styles.icon} /> },
-        ];
+
       case 'vendor':
         return [
           { label: 'Dashboard', path: '/vendor', icon: <FiGrid className={styles.icon} />, end: true },

@@ -9,16 +9,16 @@ const router = express.Router();
 
 // @desc    Place a new order
 // @route   POST /api/orders
-router.post('/', protect, async (req, res) => {
-  const { total, paymentMethod, shippingAddress, items } = req.body;
+router.post('/', async (req, res) => {
+  const { customerId, customerName, total, paymentMethod, shippingAddress, items } = req.body;
   try {
     if (!items || items.length === 0) {
       return res.status(400).json({ message: 'No items ordered' });
     }
 
     const order = new Order({
-      customerId: req.user._id,
-      customerName: req.user.name,
+      customerId: customerId || 'guest',
+      customerName: customerName || 'Guest',
       total,
       paymentMethod,
       shippingAddress,

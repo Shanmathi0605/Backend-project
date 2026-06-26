@@ -76,7 +76,7 @@ export const AuthPages = () => {
         if (redirect) {
           navigate(`/${redirect}`);
         } else {
-          navigate(role === 'admin' ? '/admin' : role === 'vendor' ? '/vendor' : '/customer');
+          navigate(role === 'admin' ? '/admin' : role === 'vendor' ? '/vendor' : '/');
         }
       } else if (isRegister) {
         const extraData = role === 'vendor' ? { storeName, status: 'Pending Approval' } : {};
