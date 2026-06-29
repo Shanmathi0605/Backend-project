@@ -59,6 +59,7 @@ export const AuthProvider = ({ children }) => {
           role: loginRole,
           avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop',
           storeName: loginRole === 'vendor' ? 'TechNova Solutions' : undefined,
+          status: 'Approved',
         };
         localStorage.setItem('app_token', 'mock_jwt_token_header.' + btoa(JSON.stringify(mockUser)));
         localStorage.setItem('app_user', JSON.stringify(mockUser));
@@ -78,7 +79,8 @@ export const AuthProvider = ({ children }) => {
           email: res.data.email,
           role: res.data.role,
           avatar: res.data.avatar,
-          storeName: res.data.storeName
+          storeName: res.data.storeName,
+          status: res.data.status
         };
         localStorage.setItem('app_token', res.data.token);
         localStorage.setItem('app_user', JSON.stringify(loggedUser));
@@ -109,7 +111,8 @@ export const AuthProvider = ({ children }) => {
           email: res.data.email,
           role: res.data.role,
           avatar: res.data.avatar,
-          storeName: res.data.storeName
+          storeName: res.data.storeName,
+          status: res.data.status
         };
         localStorage.setItem('app_token', res.data.token);
         localStorage.setItem('app_user', JSON.stringify(loggedUser));
@@ -157,6 +160,7 @@ export const AuthProvider = ({ children }) => {
           role,
           avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=256&auto=format&fit=crop',
           ...extraData,
+          status: role === 'vendor' ? 'Pending Approval' : 'Approved',
         };
         localStorage.setItem('app_token', 'mock_jwt_token_header.' + btoa(JSON.stringify(mockUser)));
         localStorage.setItem('app_user', JSON.stringify(mockUser));
@@ -179,7 +183,8 @@ export const AuthProvider = ({ children }) => {
           email: res.data.email,
           role: res.data.role,
           avatar: res.data.avatar,
-          storeName: res.data.storeName
+          storeName: res.data.storeName,
+          status: res.data.status
         };
         localStorage.setItem('app_token', res.data.token);
         localStorage.setItem('app_user', JSON.stringify(registeredUser));
@@ -220,7 +225,8 @@ export const AuthProvider = ({ children }) => {
           email: res.data.email,
           role: res.data.role,
           avatar: res.data.avatar,
-          storeName: res.data.storeName
+          storeName: res.data.storeName,
+          status: res.data.status
         };
         localStorage.setItem('app_user', JSON.stringify(updatedUser));
         setUser(updatedUser);

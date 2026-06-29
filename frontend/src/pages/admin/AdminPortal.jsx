@@ -167,7 +167,7 @@ export const AdminVendors = () => {
         {pending.length > 0 ? (
           <div className={styles.grid}>
             {pending.map(v => (
-              <div key={v.id} className={styles.card}>
+              <div key={v._id || v.id} className={styles.card}>
                 <div className={styles.cardHeader}>
                   <strong style={{ fontSize: '16px' }}>{v.name}</strong>
                   <span className={`${styles.badge}`} style={{ backgroundColor: '#FEF3C7', color: '#92400E' }}>Pending</span>
@@ -177,8 +177,8 @@ export const AdminVendors = () => {
                   Registration: {v.joined}
                 </p>
                 <div className={styles.btnGroup}>
-                  <button onClick={() => handleStatusUpdate(v.id, 'Approved')} className={styles.approveBtn}>Approve Seller</button>
-                  <button onClick={() => handleStatusUpdate(v.id, 'Rejected')} className={styles.rejectBtn}>Reject</button>
+                  <button onClick={() => handleStatusUpdate(v._id || v.id, 'Approved')} className={styles.approveBtn}>Approve Seller</button>
+                  <button onClick={() => handleStatusUpdate(v._id || v.id, 'Rejected')} className={styles.rejectBtn}>Reject</button>
                 </div>
               </div>
             ))}
@@ -203,12 +203,12 @@ export const AdminVendors = () => {
             </thead>
             <tbody>
               {active.map(v => (
-                <tr key={v.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                <tr key={v._id || v.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                   <td style={{ padding: '16px', fontWeight: '600' }}>{v.name}</td>
                   <td style={{ padding: '16px' }}>{v.email}</td>
                   <td style={{ padding: '16px' }}>{v.commissionRate || 10}%</td>
                   <td style={{ padding: '16px' }}>
-                    <button onClick={() => handleStatusUpdate(v.id, 'Suspended')} style={{ color: '#EF4444', fontSize: '13px', fontWeight: '600' }}>Suspend Store</button>
+                    <button onClick={() => handleStatusUpdate(v._id || v.id, 'Suspended')} style={{ color: '#EF4444', fontSize: '13px', fontWeight: '600' }}>Suspend Store</button>
                   </td>
                 </tr>
               ))}
@@ -321,7 +321,7 @@ export const AdminProducts = () => {
           </thead>
           <tbody>
             {products.map(p => (
-              <tr key={p.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
+              <tr key={p._id || p.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                 <td style={{ padding: '16px', fontWeight: '600' }}>
                   {p.name}
                   {!p.isApproved && <span style={{ marginLeft: '8px', padding: '2px 6px', fontSize: '11px', backgroundColor: '#FEF3C7', color: '#92400E', borderRadius: '4px' }}>Pending Approval</span>}
@@ -332,11 +332,11 @@ export const AdminProducts = () => {
                 <td style={{ padding: '16px' }}>
                   <div style={{ display: 'flex', gap: '8px' }}>
                     {!p.isApproved ? (
-                      <button onClick={() => handleStatusUpdate(p.id, true)} style={{ backgroundColor: '#10B981', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '4px', fontSize: '12px', fontWeight: '600' }}>Approve</button>
+                      <button onClick={() => handleStatusUpdate(p._id || p.id, true)} style={{ backgroundColor: '#10B981', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '4px', fontSize: '12px', fontWeight: '600' }}>Approve</button>
                     ) : (
-                      <button onClick={() => handleStatusUpdate(p.id, false)} style={{ backgroundColor: '#F59E0B', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '4px', fontSize: '12px', fontWeight: '600' }}>Revoke</button>
+                      <button onClick={() => handleStatusUpdate(p._id || p.id, false)} style={{ backgroundColor: '#F59E0B', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '4px', fontSize: '12px', fontWeight: '600' }}>Revoke</button>
                     )}
-                    <button onClick={() => handleDelete(p.id)} style={{ color: '#EF4444', fontSize: '13px', fontWeight: '600', background: 'none', border: 'none', cursor: 'pointer' }}>Delete</button>
+                    <button onClick={() => handleDelete(p._id || p.id)} style={{ color: '#EF4444', fontSize: '13px', fontWeight: '600', background: 'none', border: 'none', cursor: 'pointer' }}>Delete</button>
                   </div>
                 </td>
               </tr>
@@ -405,7 +405,7 @@ export const AdminCatalog = () => {
           <button type="submit" style={{ backgroundColor: 'var(--primary-color)', color: 'var(--card-bg)', padding: '10px 20px', borderRadius: 'var(--border-radius-md)', fontWeight: '600' }}>Add</button>
         </form>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-          {categories.map(c => <span key={c.id} style={{ backgroundColor: 'var(--bg-color)', border: '1px solid var(--border-color)', padding: '6px 12px', borderRadius: 'var(--border-radius-full)', fontSize: '13px' }}>{c.name}</span>)}
+          {categories.map(c => <span key={c._id || c.id} style={{ backgroundColor: 'var(--bg-color)', border: '1px solid var(--border-color)', padding: '6px 12px', borderRadius: 'var(--border-radius-full)', fontSize: '13px' }}>{c.name}</span>)}
         </div>
       </div>
 
@@ -417,7 +417,7 @@ export const AdminCatalog = () => {
           <button type="submit" style={{ backgroundColor: 'var(--primary-color)', color: 'var(--card-bg)', padding: '10px 20px', borderRadius: 'var(--border-radius-md)', fontWeight: '600' }}>Add</button>
         </form>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-          {brands.map(b => <span key={b.id} style={{ backgroundColor: 'var(--bg-color)', border: '1px solid var(--border-color)', padding: '6px 12px', borderRadius: 'var(--border-radius-full)', fontSize: '13px' }}>{b.name}</span>)}
+          {brands.map(b => <span key={b._id || b.id} style={{ backgroundColor: 'var(--bg-color)', border: '1px solid var(--border-color)', padding: '6px 12px', borderRadius: 'var(--border-radius-full)', fontSize: '13px' }}>{b.name}</span>)}
         </div>
       </div>
     </div>
@@ -463,8 +463,8 @@ export const AdminOrders = () => {
           </thead>
           <tbody>
             {orders.map(o => (
-              <tr key={o.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                <td style={{ padding: '16px' }}><strong>#{o.id}</strong></td>
+              <tr key={o._id || o.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                <td style={{ padding: '16px' }}><strong>#{o._id || o.id}</strong></td>
                 <td style={{ padding: '16px' }}>{o.customerName}</td>
                 <td style={{ padding: '16px', fontWeight: '700' }}>${o.total.toFixed(2)}</td>
                 <td style={{ padding: '16px' }}>{o.paymentMethod}</td>
@@ -532,7 +532,7 @@ export const AdminWithdrawals = () => {
             </thead>
             <tbody>
               {requests.map(w => (
-                <tr key={w.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                <tr key={w._id || w.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                   <td style={{ padding: '16px', fontWeight: '600' }}>{w.vendorName}</td>
                   <td style={{ padding: '16px', fontWeight: '700', color: 'var(--primary-color)' }}>${w.amount.toFixed(2)}</td>
                   <td style={{ padding: '16px' }}>{w.date}</td>
@@ -542,8 +542,8 @@ export const AdminWithdrawals = () => {
                   <td style={{ padding: '16px' }}>
                     {w.status === 'Pending' && (
                       <div style={{ display: 'flex', gap: '8px' }}>
-                        <button onClick={() => handleStatus(w.id, 'Approved')} style={{ backgroundColor: '#10B981', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '4px', fontSize: '12px', fontWeight: '600' }}>Approve</button>
-                        <button onClick={() => handleStatus(w.id, 'Rejected')} style={{ backgroundColor: '#EF4444', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '4px', fontSize: '12px', fontWeight: '600' }}>Reject</button>
+                        <button onClick={() => handleStatus(w._id || w.id, 'Approved')} style={{ backgroundColor: '#10B981', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '4px', fontSize: '12px', fontWeight: '600' }}>Approve</button>
+                        <button onClick={() => handleStatus(w._id || w.id, 'Rejected')} style={{ backgroundColor: '#EF4444', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '4px', fontSize: '12px', fontWeight: '600' }}>Reject</button>
                       </div>
                     )}
                   </td>
@@ -600,7 +600,7 @@ export const AdminTickets = () => {
       {tickets.length > 0 ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {tickets.map(t => (
-            <div key={t.id} style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', padding: '24px', borderRadius: 'var(--border-radius-lg)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+            <div key={t._id || t.id} style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', padding: '24px', borderRadius: 'var(--border-radius-lg)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
               <div>
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                   <strong style={{ fontSize: '16px' }}>{t.subject}</strong>
@@ -611,7 +611,7 @@ export const AdminTickets = () => {
                 <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '8px' }}>Submitted by {t.customerName} on {t.date}</p>
               </div>
               {t.status === 'Open' && (
-                <button onClick={() => handleCloseTicket(t.id)} style={{ backgroundColor: 'var(--primary-color)', color: 'var(--card-bg)', padding: '8px 16px', borderRadius: 'var(--border-radius-md)', fontSize: '13px', fontWeight: '600' }}>Mark Resolved</button>
+                <button onClick={() => handleCloseTicket(t._id || t.id)} style={{ backgroundColor: 'var(--primary-color)', color: 'var(--card-bg)', padding: '8px 16px', borderRadius: 'var(--border-radius-md)', fontSize: '13px', fontWeight: '600' }}>Mark Resolved</button>
               )}
             </div>
           ))}

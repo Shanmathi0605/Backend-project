@@ -17,20 +17,20 @@ export const Shop = () => {
   const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(true);
   
+  // Sync URL parameters
+  const searchQuery = searchParams.get('search') || '';
+  const urlCategory = searchParams.get('category') || '';
+  const urlBrand = searchParams.get('brand') || '';
+
   // Filter States
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedBrand, setSelectedBrand] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(urlCategory);
+  const [selectedBrand, setSelectedBrand] = useState(urlBrand);
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [selectedRating, setSelectedRating] = useState('');
   const [availability, setAvailability] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [currentPage, setCurrentPage] = useState(1);
-
-  // Sync URL parameters
-  const searchQuery = searchParams.get('search') || '';
-  const urlCategory = searchParams.get('category') || '';
-  const urlBrand = searchParams.get('brand') || '';
 
   useEffect(() => {
     // Load metadata once
@@ -50,12 +50,22 @@ export const Shop = () => {
   }, []);
 
   useEffect(() => {
-    // Initialize filter states from URL
-    if (urlCategory) setSelectedCategory(urlCategory);
-    if (urlBrand) setSelectedBrand(urlBrand);
+    // Sync filter states from URL search parameters dynamically
+    setSelectedCategory(urlCategory);
+    setSelectedBrand(urlBrand);
+
+    // Reset other filters when a new category or brand query is received
+    if (urlCategory || urlBrand) {
+      setMinPrice('');
+      setMaxPrice('');
+      setSelectedRating('');
+      setAvailability('');
+    }
   }, [urlCategory, urlBrand]);
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchFilteredProducts = async () => {
       setLoading(true);
       try {
@@ -69,16 +79,24 @@ export const Shop = () => {
           availability,
           sort: sortBy
         });
-        setProducts(data);
-        setCurrentPage(1); // Reset to page 1 on new filter
+        if (isMounted) {
+          setProducts(data);
+          setCurrentPage(1); // Reset to page 1 on new filter
+        }
       } catch (err) {
         console.error(err);
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchFilteredProducts();
+
+    return () => {
+      isMounted = false;
+    };
   }, [searchQuery, selectedCategory, selectedBrand, minPrice, maxPrice, selectedRating, availability, sortBy]);
 
   const handleResetFilters = () => {

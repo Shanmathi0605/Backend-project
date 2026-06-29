@@ -32,6 +32,7 @@ export const Footer = () => {
             <li className={styles.linkItem}><Link to="/about">About Us</Link></li>
             <li className={styles.linkItem}><Link to="/contact">Contact Support</Link></li>
             <li className={styles.linkItem}><Link to="/faq">Frequently Asked FAQs</Link></li>
+            <li className={styles.linkItem}><Link to="/register?role=vendor">Sell on NovaCart</Link></li>
           </ul>
         </div>
         <div>

@@ -90,6 +90,7 @@ router.post('/register', async (req, res) => {
       role: user.role,
       avatar: user.avatar,
       storeName: user.storeName,
+      status: user.status,
       token: generateToken(user._id)
     });
   } catch (error) {
@@ -192,6 +193,7 @@ router.post('/login', async (req, res) => {
       role: user.role,
       avatar: user.avatar,
       storeName: user.storeName,
+      status: user.status,
       token: generateToken(user._id)
     });
   } catch (error) {
@@ -227,6 +229,7 @@ router.post('/verify-login-otp', async (req, res) => {
       role: user.role,
       avatar: user.avatar,
       storeName: user.storeName,
+      status: user.status,
       token: generateToken(user._id)
     });
   } catch (error) {
@@ -269,7 +272,8 @@ router.put('/profile', protect, async (req, res) => {
         email: updatedUser.email,
         role: updatedUser.role,
         avatar: updatedUser.avatar,
-        storeName: updatedUser.storeName
+        storeName: updatedUser.storeName,
+        status: updatedUser.status
       });
     } else {
       res.status(404).json({ message: 'User not found' });

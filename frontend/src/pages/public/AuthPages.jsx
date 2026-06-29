@@ -17,9 +17,14 @@ export const AuthPages = () => {
   // Form States
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  // Parse query parameters
+  const queryParams = new URLSearchParams(location.search);
+  const redirect = queryParams.get('redirect') || '';
+  const urlRole = queryParams.get('role') || '';
+
   const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
-  const [role, setRole] = useState('customer');
+  const [role, setRole] = useState(urlRole === 'vendor' ? 'vendor' : 'customer');
   const [storeName, setStoreName] = useState('');
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
@@ -27,9 +32,14 @@ export const AuthPages = () => {
   const [loading, setLoading] = useState(false);
   const [loginRequiresOtp, setLoginRequiresOtp] = useState(false);
 
-  // Parse redirect query
-  const queryParams = new URLSearchParams(location.search);
-  const redirect = queryParams.get('redirect') || '';
+  // Sync role when URL query param changes
+  React.useEffect(() => {
+    if (isRegister) {
+      setRole(urlRole === 'vendor' ? 'vendor' : 'customer');
+    } else {
+      setRole('customer');
+    }
+  }, [urlRole, isRegister]);
 
   const handleValidation = () => {
     if (!email.trim() || !email.includes('@')) {
@@ -167,7 +177,7 @@ export const AuthPages = () => {
       <div style={{ width: '100%', maxWidth: '480px', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-lg)', boxShadow: 'var(--shadow-lg)', padding: '40px 32px' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <h2 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '28px', fontWeight: '700', color: 'var(--text-primary)' }}>
-            {isForgot ? 'Password Recovery' : isReset ? 'Set New Password' : isLogin ? (loginRequiresOtp ? 'Security Check' : 'Welcome Back') : 'Create an Account'}
+            {isForgot ? 'Password Recovery' : isReset ? 'Set New Password' : isLogin ? (loginRequiresOtp ? 'Security Check' : 'Welcome Back') : (role === 'vendor' ? 'Become a Seller' : 'Create an Account')}
           </h2>
           <p style={{ color: 'var(--text-secondary)', marginBottom: '32px' }}>
             {isForgot
@@ -176,7 +186,7 @@ export const AuthPages = () => {
               ? 'Enter your OTP and new password.'
               : isLogin
               ? (loginRequiresOtp ? 'Enter the OTP sent to your email.' : 'Sign in to your account to continue.')
-              : 'Fill in your details to get started.'}
+              : (role === 'vendor' ? 'Register your store and start selling today.' : 'Fill in your details to get started.')}
           </p>
         </div>
 

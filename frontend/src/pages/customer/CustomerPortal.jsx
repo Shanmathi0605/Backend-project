@@ -16,6 +16,7 @@ import Loader from '../../components/Loader/Loader';
 import EmptyState from '../../components/EmptyState/EmptyState';
 import { api } from '../../services/api';
 import styles from './CustomerPortal.module.css';
+import { motion } from 'framer-motion';
 
 // ----------------------------------------------------
 // 1. CUSTOMER DASHBOARD OVERVIEW
@@ -866,17 +867,136 @@ export const CustomerOrderSuccess = () => {
 
   if (!loaded || !order) return <Loader text="Loading order details..." />;
 
+  const drawCircle = {
+    hidden: { pathLength: 0, opacity: 0 },
+    visible: {
+      pathLength: 1,
+      opacity: 1,
+      transition: {
+        pathLength: { type: 'spring', duration: 1.2, bounce: 0 },
+        opacity: { duration: 0.01 }
+      }
+    }
+  };
+
+  const drawCheck = {
+    hidden: { pathLength: 0, opacity: 0 },
+    visible: {
+      pathLength: 1,
+      opacity: 1,
+      transition: {
+        delay: 0.6,
+        pathLength: { type: 'spring', duration: 0.8, bounce: 0 },
+        opacity: { delay: 0.6, duration: 0.01 }
+      }
+    }
+  };
+
+  const textContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.035,
+        delayChildren: 1.2,
+      }
+    }
+  };
+
+  const textLetter = {
+    hidden: { opacity: 0, x: -6, y: 4 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      y: 0,
+      transition: {
+        type: 'spring',
+        damping: 14,
+        stiffness: 110,
+      }
+    }
+  };
+
+  const cardContainer = {
+    hidden: { scale: 0.9, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: {
+        type: 'spring',
+        duration: 0.8,
+        bounce: 0.25
+      }
+    }
+  };
+
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh', padding: '24px' }}>
-      <div style={{ width: '100%', maxWidth: '520px', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-lg)', padding: '40px 32px', textAlign: 'center', boxShadow: 'var(--shadow-md)' }}>
-        <FiCheckCircle style={{ fontSize: '64px', color: '#10B981', marginBottom: '20px' }} />
-        <h2 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '28px', fontWeight: '700', color: 'var(--text-primary)' }}>Order Placed Successfully!</h2>
+      <motion.div
+        variants={cardContainer}
+        initial="hidden"
+        animate="visible"
+        style={{ width: '100%', maxWidth: '520px', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-lg)', padding: '40px 32px', textAlign: 'center', boxShadow: 'var(--shadow-md)' }}
+      >
+        {/* Animated SVG Checkmark Track */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+          <svg width="80" height="80" viewBox="0 0 100 100" style={{ overflow: 'visible' }}>
+            <motion.circle
+              cx="50"
+              cy="50"
+              r="42"
+              stroke="#10B981"
+              strokeWidth="6"
+              strokeLinecap="round"
+              fill="transparent"
+              variants={drawCircle}
+              initial="hidden"
+              animate="visible"
+            />
+            <motion.path
+              d="M32 52 L45 65 L68 36"
+              stroke="#10B981"
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="transparent"
+              variants={drawCheck}
+              initial="hidden"
+              animate="visible"
+            />
+          </svg>
+        </div>
+
+        {/* Dynamic Typewriting Title */}
+        <motion.h2
+          variants={textContainer}
+          initial="hidden"
+          animate="visible"
+          style={{
+            fontFamily: 'Outfit, sans-serif',
+            fontSize: '28px',
+            fontWeight: '700',
+            color: 'var(--text-primary)',
+            display: 'flex',
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+            gap: '0.04em',
+            margin: '0 auto 12px'
+          }}
+        >
+          {Array.from("Order Placed Successfully!").map((char, index) => (
+            <motion.span key={index} variants={textLetter} style={{ display: 'inline-block' }}>
+              {char === " " ? "\u00A0" : char}
+            </motion.span>
+          ))}
+        </motion.h2>
+
         <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginTop: '8px' }}>
           Thank you for buying with NovaCart. Your transaction has processed.
         </p>
 
         <div style={{ backgroundColor: 'var(--bg-color)', border: '1px solid var(--border-color)', padding: '20px', borderRadius: 'var(--border-radius-md)', margin: '24px 0', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <p style={{ fontSize: '14px' }}>Order ID: <strong>#{order.id}</strong></p>
+          <p style={{ fontSize: '14px' }}>Order ID: <strong>#{order._id || order.id}</strong></p>
           <p style={{ fontSize: '14px' }}>Delivery Address: <strong>{order.shippingAddress?.street}, {order.shippingAddress?.city}</strong></p>
           <p style={{ fontSize: '14px' }}>Billing Amount: <strong>${order.total?.toFixed(2)}</strong></p>
         </div>
@@ -889,7 +1009,7 @@ export const CustomerOrderSuccess = () => {
             Continue Shopping
           </button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
