@@ -1,0 +1,96 @@
+.dealsContainer {
+  padding: 40px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.heroBanner {
+  background: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%);
+  border-radius: 20px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  margin-bottom: 40px;
+  box-shadow: 0 10px 25px rgba(255, 75, 43, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.heroTitle {
+  font-size: 42px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  font-family: 'Outfit', sans-serif;
+  z-index: 1;
+}
+
+.heroSubtitle {
+  font-size: 18px;
+  opacity: 0.9;
+  margin-bottom: 24px;
+  max-width: 600px;
+  z-index: 1;
+}
+
+.timer {
+  display: flex;
+  gap: 16px;
+  z-index: 1;
+}
+
+.timeBox {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 12px 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  min-width: 80px;
+}
+
+.timeValue {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.timeLabel {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
+
+.sectionTitle {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+}
+
+.dealsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 60px 0;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: 32px;
+  }
+  .dealsContainer {
+    padding: 24px 16px;
+  }
+}
