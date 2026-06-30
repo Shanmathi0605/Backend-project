@@ -133,7 +133,7 @@ export const AuthPages = () => {
           addToast('Your seller account registration is pending admin approval', 'info');
           navigate('/vendor');
         } else {
-          navigate('/customer');
+          navigate('/');
         }
       } else if (isForgot) {
         await forgotPassword(email);

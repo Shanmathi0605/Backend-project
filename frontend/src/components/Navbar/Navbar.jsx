@@ -35,7 +35,7 @@ export const Navbar = () => {
       if (role === 'vendor') email = 'smily.shanvi6597+vendor@gmail.com';
       
       await login(email, 'password123', role);
-      if (role === 'customer') navigate('/customer');
+      if (role === 'customer') navigate('/');
       if (role === 'vendor') navigate('/vendor');
       if (role === 'admin') navigate('/admin');
     }

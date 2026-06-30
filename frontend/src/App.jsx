@@ -100,7 +100,7 @@ function App() {
 
                 {/* Customer Dashboard Portal */}
                 <Route path="/customer" element={<CustomerLayout />}>
-                  <Route index element={<CustomerDashboard />} />
+                  <Route index element={<Navigate to="/customer/orders" replace />} />
                   <Route path="profile" element={<CustomerProfile />} />
                   <Route path="orders" element={<CustomerOrders />} />
                   <Route path="addresses" element={<CustomerAddresses />} />
