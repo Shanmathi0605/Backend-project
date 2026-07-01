@@ -19,6 +19,19 @@
   gap: 24px;
 }
 
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 16px;
+  }
+  .container {
+    height: 70px;
+    gap: 12px;
+  }
+  .logo {
+    font-size: 20px;
+  }
+}
+
 .logo {
   font-family: 'Outfit', sans-serif;
   font-size: 24px;
@@ -43,7 +56,58 @@
 
 @media (max-width: 992px) {
   .navLinks {
-    display: none; /* Hide standard links on mobile */
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 280px;
+    height: 100vh;
+    background-color: var(--card-bg);
+    flex-direction: column;
+    padding: 90px 24px 24px;
+    box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1010;
+    display: flex;
+  }
+  .mobileMenu {
+    right: 0;
+  }
+}
+
+.closeMenuBtn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 8px;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+@media (max-width: 992px) {
+  .closeMenuBtn {
+    display: block;
+  }
+}
+
+.hamburgerBtn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 4px;
+}
+
+@media (max-width: 992px) {
+  .hamburgerBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 

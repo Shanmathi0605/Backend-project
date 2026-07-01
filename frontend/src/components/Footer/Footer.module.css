@@ -13,7 +13,14 @@
   gap: 48px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 576px) {
   .grid {
     grid-template-columns: 1fr;
     gap: 32px;
@@ -95,4 +102,12 @@
   gap: 12px;
   font-size: 24px;
   color: var(--text-secondary);
+}
+
+@media (max-width: 576px) {
+  .bottomBar {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
 }

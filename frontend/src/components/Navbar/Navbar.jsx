@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FiShoppingBag, FiHeart, FiUser, FiSearch, FiLogOut, FiChevronDown, FiLayers } from 'react-icons/fi';
+import { FiShoppingBag, FiHeart, FiUser, FiSearch, FiLogOut, FiChevronDown, FiLayers, FiMenu, FiX } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
@@ -13,6 +13,7 @@ export const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [roleMenuOpen, setRoleMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
@@ -58,24 +59,33 @@ export const Navbar = () => {
           <span>Nova<span className={styles.logoText}>Cart</span></span>
         </Link>
 
+
+
         {!isVendorOrAdmin && (
           <>
             {/* Navigation Links */}
-            <ul className={styles.navLinks}>
+            <ul className={`${styles.navLinks} ${mobileMenuOpen ? styles.mobileMenu : ''}`}>
+              <button 
+                className={styles.closeMenuBtn}
+                onClick={() => setMobileMenuOpen(false)}
+                title="Close Menu"
+              >
+                <FiX />
+              </button>
           <li className={`${styles.navLink} ${isLinkActive('/') ? styles.activeLink : ''}`}>
-            <Link to="/">Home</Link>
+            <Link to="/" onClick={() => setMobileMenuOpen(false)}>Home</Link>
           </li>
           <li className={`${styles.navLink} ${isLinkActive('/shop') ? styles.activeLink : ''}`}>
-            <Link to="/shop">Shop</Link>
+            <Link to="/shop" onClick={() => setMobileMenuOpen(false)}>Shop</Link>
           </li>
           <li className={`${styles.navLink} ${isLinkActive('/categories') ? styles.activeLink : ''}`}>
-            <Link to="/categories">Categories</Link>
+            <Link to="/categories" onClick={() => setMobileMenuOpen(false)}>Categories</Link>
           </li>
           <li className={`${styles.navLink} ${isLinkActive('/deals') ? styles.activeLink : ''}`}>
-            <Link to="/deals">Deals</Link>
+            <Link to="/deals" onClick={() => setMobileMenuOpen(false)}>Deals</Link>
           </li>
           <li className={`${styles.navLink} ${isLinkActive('/brands') ? styles.activeLink : ''}`}>
-            <Link to="/brands">Brands</Link>
+            <Link to="/brands" onClick={() => setMobileMenuOpen(false)}>Brands</Link>
           </li>
         </ul>
 
@@ -221,6 +231,15 @@ export const Navbar = () => {
               </div>
             )}
           </div>
+
+          {!isVendorOrAdmin && (
+            <button 
+              className={styles.hamburgerBtn} 
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <FiMenu />
+            </button>
+          )}
         </div>
       </div>
     </nav>

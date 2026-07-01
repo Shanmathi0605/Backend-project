@@ -7,6 +7,9 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 
+// Components
+import ScrollToTop from './components/ScrollToTop/ScrollToTop';
+
 // Layouts
 import PublicLayout from './layouts/PublicLayout';
 import VendorLayout from './layouts/VendorLayout';
@@ -98,6 +101,7 @@ function App() {
     <BrowserRouter>
       <ToastProvider>
         <AuthProvider>
+          <ScrollToTop />
           <CartProvider>
             <WishlistProvider>
               <SocketManager>

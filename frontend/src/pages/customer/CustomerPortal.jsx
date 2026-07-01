@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   FiGrid, FiUser, FiMapPin, FiHeart, FiShoppingBag, FiList, FiStar,
   FiSettings, FiPlus, FiTrash2, FiMap, FiCreditCard, FiCheckCircle, FiDollarSign,
-  FiCamera, FiLock, FiEdit3
+  FiCamera, FiLock, FiEdit3, FiChevronRight
 } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
@@ -476,14 +476,16 @@ export const CustomerCart = () => {
                   <h4 className={styles.cartTitle}><Link to={`/product/${pId}`}>{p.name}</Link></h4>
                   <p className={styles.cartPrice}>${price.toFixed(2)}</p>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <button onClick={() => updateQuantity(pId, item.quantity - 1)} style={{ width: '32px', height: '32px', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>-</button>
-                  <span style={{ fontWeight: '600', minWidth: '24px', textAlign: 'center' }}>{item.quantity}</span>
-                  <button onClick={() => updateQuantity(pId, item.quantity + 1)} style={{ width: '32px', height: '32px', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                <div className={styles.cartActions}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <button onClick={() => updateQuantity(pId, item.quantity - 1)} style={{ width: '32px', height: '32px', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>-</button>
+                    <span style={{ fontWeight: '600', minWidth: '24px', textAlign: 'center' }}>{item.quantity}</span>
+                    <button onClick={() => updateQuantity(pId, item.quantity + 1)} style={{ width: '32px', height: '32px', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                  </div>
+                  <button onClick={() => removeFromCart(pId)} className={styles.cartRemove} title="Remove Item">
+                    <FiTrash2 />
+                  </button>
                 </div>
-                <button onClick={() => removeFromCart(pId)} className={styles.cartRemove} title="Remove Item">
-                  <FiTrash2 />
-                </button>
               </div>
             );
           })}
@@ -529,7 +531,7 @@ export const CustomerCart = () => {
             </button>
           </form>
 
-          <button onClick={() => navigate('/checkout')} className={styles.btnPrimary} style={{ width: '100%', marginTop: '8px' }}>
+          <button onClick={() => navigate('/checkout')} className={styles.primaryBtn} style={{ width: '100%', marginTop: '8px' }}>
             Proceed to Checkout
           </button>
         </div>
@@ -581,6 +583,13 @@ export const CustomerCheckout = () => {
 
   return (
     <div>
+      <div style={{ display: 'flex', gap: '8px', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px', alignItems: 'center' }}>
+        <Link to="/cart" style={{ color: 'var(--text-secondary)' }}>Cart</Link>
+        <FiChevronRight size={12} />
+        <span style={{ color: 'var(--text-primary)', fontWeight: '600' }}>Checkout</span>
+        <FiChevronRight size={12} />
+        <span>Payment</span>
+      </div>
       <h1 className={styles.title} style={{ marginBottom: '24px' }}>Shipping Checkout</h1>
       <div className={styles.cartLayout}>
         {/* Shipping Form */}
@@ -608,7 +617,7 @@ export const CustomerCheckout = () => {
             <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px' }}>Contact Phone Number</label>
             <input type="text" placeholder="1234567890" value={phone} onChange={(e) => setPhone(e.target.value)} style={{ width: '100%', padding: '10px 14px', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-md)' }} />
           </div>
-          <button type="submit" className={styles.btnPrimary} style={{ width: '100%' }}>
+          <button type="submit" className={styles.primaryBtn} style={{ width: '100%' }}>
             Proceed to Payment Details
           </button>
         </form>
@@ -768,7 +777,17 @@ export const CustomerPayment = () => {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh', padding: '24px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '60vh', padding: '24px' }}>
+      <div style={{ width: '100%', maxWidth: '500px', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', gap: '8px', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px', alignItems: 'center' }}>
+          <Link to="/cart" style={{ color: 'var(--text-secondary)' }}>Cart</Link>
+          <FiChevronRight size={12} />
+          <Link to="/checkout" style={{ color: 'var(--text-secondary)' }}>Checkout</Link>
+          <FiChevronRight size={12} />
+          <span style={{ color: 'var(--text-primary)', fontWeight: '600' }}>Payment</span>
+        </div>
+      </div>
+      
       <div style={{ width: '100%', maxWidth: '500px', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-lg)', padding: '36px', boxShadow: 'var(--shadow-lg)' }}>
         <h2 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '24px', fontWeight: '700', marginBottom: '24px', textAlign: 'center' }}>Complete Payment Gateway</h2>
         
@@ -931,7 +950,19 @@ export const CustomerOrderSuccess = () => {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh', padding: '24px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '60vh', padding: '24px' }}>
+      <div style={{ width: '100%', maxWidth: '520px', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', gap: '8px', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px', alignItems: 'center' }}>
+          <span style={{ color: 'var(--text-secondary)' }}>Cart</span>
+          <FiChevronRight size={12} />
+          <span style={{ color: 'var(--text-secondary)' }}>Checkout</span>
+          <FiChevronRight size={12} />
+          <span style={{ color: 'var(--text-secondary)' }}>Payment</span>
+          <FiChevronRight size={12} />
+          <span style={{ color: 'var(--text-primary)', fontWeight: '600' }}>Order Success</span>
+        </div>
+      </div>
+
       <motion.div
         variants={cardContainer}
         initial="hidden"
@@ -991,21 +1022,64 @@ export const CustomerOrderSuccess = () => {
           ))}
         </motion.h2>
 
-        <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginTop: '8px' }}>
-          Thank you for buying with NovaCart. Your transaction has processed.
-        </p>
+        {/* Order Tracker */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '32px 0 24px', position: 'relative' }}>
+          <div style={{ position: 'absolute', top: '50%', left: '10%', right: '10%', height: '4px', backgroundColor: '#E5E7EB', zIndex: 0, transform: 'translateY(-50%)' }}></div>
+          <div style={{ position: 'absolute', top: '50%', left: '10%', width: '0%', height: '4px', backgroundColor: '#10B981', zIndex: 1, transform: 'translateY(-50%)' }}></div>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 2, backgroundColor: 'var(--card-bg)', padding: '0 8px' }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#10B981', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><FiCheckCircle /></div>
+            <span style={{ fontSize: '12px', fontWeight: '600', marginTop: '8px', color: 'var(--text-primary)' }}>Placed</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 2, backgroundColor: 'var(--card-bg)', padding: '0 8px' }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#E5E7EB', color: '#9CA3AF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>2</div>
+            <span style={{ fontSize: '12px', fontWeight: '600', marginTop: '8px', color: 'var(--text-secondary)' }}>Processing</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 2, backgroundColor: 'var(--card-bg)', padding: '0 8px' }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#E5E7EB', color: '#9CA3AF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>3</div>
+            <span style={{ fontSize: '12px', fontWeight: '600', marginTop: '8px', color: 'var(--text-secondary)' }}>Shipped</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 2, backgroundColor: 'var(--card-bg)', padding: '0 8px' }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#E5E7EB', color: '#9CA3AF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>4</div>
+            <span style={{ fontSize: '12px', fontWeight: '600', marginTop: '8px', color: 'var(--text-secondary)' }}>Delivered</span>
+          </div>
+        </div>
 
-        <div style={{ backgroundColor: 'var(--bg-color)', border: '1px solid var(--border-color)', padding: '20px', borderRadius: 'var(--border-radius-md)', margin: '24px 0', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <p style={{ fontSize: '14px' }}>Order ID: <strong>#{order._id || order.id}</strong></p>
-          <p style={{ fontSize: '14px' }}>Delivery Address: <strong>{order.shippingAddress?.street}, {order.shippingAddress?.city}</strong></p>
-          <p style={{ fontSize: '14px' }}>Billing Amount: <strong>${order.total?.toFixed(2)}</strong></p>
+        {/* Animated Receipt Printing */}
+        <div style={{ position: 'relative', margin: '32px 0 24px', padding: '0 16px' }}>
+          {/* Printer Slot */}
+          <div style={{ height: '8px', backgroundColor: '#374151', borderRadius: '4px', margin: '0 16px', position: 'relative', zIndex: 2, boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.5)' }}></div>
+          {/* Receipt Paper */}
+          <motion.div 
+            initial={{ height: 0, opacity: 0, y: -20 }}
+            animate={{ height: 'auto', opacity: 1, y: 0 }}
+            transition={{ delay: 2, duration: 1.5, ease: "easeOut" }}
+            style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', padding: '24px', margin: '-4px 24px 0', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '12px', position: 'relative', zIndex: 1, boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed #E5E7EB', paddingBottom: '12px', marginBottom: '8px' }}>
+              <span style={{ fontSize: '16px', fontWeight: '700', color: '#111827', fontFamily: 'monospace' }}>ORDER RECEIPT</span>
+              <span style={{ fontSize: '14px', color: '#6B7280', fontFamily: 'monospace' }}>#{order._id || order.id || Math.floor(Math.random() * 1000000)}</span>
+            </div>
+            <p style={{ fontSize: '13px', color: '#374151', fontFamily: 'monospace' }}>Delivery To:<br/><strong>{order.shippingAddress?.name || 'Customer'}</strong><br/>{order.shippingAddress?.street}, {order.shippingAddress?.city}</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px dashed #E5E7EB', paddingTop: '16px', marginTop: '8px' }}>
+              <span style={{ fontSize: '14px', fontWeight: '600', color: '#374151', fontFamily: 'monospace' }}>TOTAL PAID:</span>
+              <span style={{ fontSize: '16px', fontWeight: '700', color: '#111827', fontFamily: 'monospace' }}>${order.total?.toFixed(2)}</span>
+            </div>
+          </motion.div>
+          {/* Zigzag bottom of receipt */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2.5 }}
+            style={{ margin: '0 24px', height: '10px', background: 'linear-gradient(-45deg, transparent 6px, #fff 0), linear-gradient(45deg, transparent 6px, #fff 0)', backgroundSize: '12px 12px', backgroundRepeat: 'repeat-x', filter: 'drop-shadow(0px 2px 2px rgba(0,0,0,0.05))', position: 'relative', zIndex: 1, marginTop: '-2px' }}
+          ></motion.div>
         </div>
 
         <div style={{ display: 'flex', gap: '12px' }}>
-          <button onClick={() => navigate('/')} className={styles.btnPrimary} style={{ width: '100%' }}>
+          <button onClick={() => navigate('/')} className={styles.primaryBtn} style={{ width: '100%' }}>
             Go to Homepage
           </button>
-          <button onClick={() => navigate('/shop')} className={styles.btnSecondary} style={{ width: '100%' }}>
+          <button onClick={() => navigate('/shop')} className={styles.primaryBtn} style={{ width: '100%', backgroundColor: 'transparent', border: '1px solid var(--primary-color)', color: 'var(--primary-color)' }}>
             Continue Shopping
           </button>
         </div>

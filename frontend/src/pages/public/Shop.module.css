@@ -14,6 +14,11 @@
   .layout {
     grid-template-columns: 1fr;
   }
+  .filters {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
 }
 
 /* Sidebar Filters */
