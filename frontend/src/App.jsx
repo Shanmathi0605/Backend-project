@@ -62,6 +62,37 @@ import {
   AdminSettings
 } from './pages/admin/AdminPortal';
 
+import { io } from 'socket.io-client';
+import { useAuth } from './context/AuthContext';
+import { useToast } from './context/ToastContext';
+import { useEffect } from 'react';
+
+const SocketManager = ({ children }) => {
+  const { user } = useAuth();
+  const { addToast } = useToast();
+
+  useEffect(() => {
+    if (user && (user.id || user._id)) {
+      const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const socket = io(API_BASE);
+
+      socket.on('connect', () => {
+        socket.emit('joinRoom', user.id || user._id);
+      });
+
+      socket.on('notification', (data) => {
+        addToast(data.message, 'info');
+      });
+
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, [user, addToast]);
+
+  return children;
+};
+
 function App() {
   return (
     <BrowserRouter>
@@ -69,75 +100,77 @@ function App() {
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>
-              <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={<PublicLayout />}>
-                  <Route index element={<Home />} />
-                  <Route path="shop" element={<Shop />} />
-                  <Route path="product/:id" element={<ProductDetails />} />
-                  <Route path="categories" element={<CategoriesBrands />} />
-                  <Route path="brands" element={<CategoriesBrands />} />
-                  <Route path="deals" element={<Deals />} />
-                  <Route path="cart" element={<CustomerCart />} />
-                  <Route path="checkout" element={<CustomerCheckout />} />
-                  <Route path="payment" element={<CustomerPayment />} />
-                  <Route path="order-success" element={<CustomerOrderSuccess />} />
-                  <Route path="order-details/:id" element={<CustomerOrderDetails />} />
-                  
-                  {/* Static CMS Pages */}
-                  <Route path="about" element={<StaticPages />} />
-                  <Route path="contact" element={<StaticPages />} />
-                  <Route path="faq" element={<StaticPages />} />
-                  <Route path="privacy" element={<StaticPages />} />
-                  <Route path="terms" element={<StaticPages />} />
+              <SocketManager>
+                <Routes>
+                  {/* Public Routes */}
+                  <Route path="/" element={<PublicLayout />}>
+                    <Route index element={<Home />} />
+                    <Route path="shop" element={<Shop />} />
+                    <Route path="product/:id" element={<ProductDetails />} />
+                    <Route path="categories" element={<CategoriesBrands />} />
+                    <Route path="brands" element={<CategoriesBrands />} />
+                    <Route path="deals" element={<Deals />} />
+                    <Route path="cart" element={<CustomerCart />} />
+                    <Route path="checkout" element={<CustomerCheckout />} />
+                    <Route path="payment" element={<CustomerPayment />} />
+                    <Route path="order-success" element={<CustomerOrderSuccess />} />
+                    <Route path="order-details/:id" element={<CustomerOrderDetails />} />
+                    
+                    {/* Static CMS Pages */}
+                    <Route path="about" element={<StaticPages />} />
+                    <Route path="contact" element={<StaticPages />} />
+                    <Route path="faq" element={<StaticPages />} />
+                    <Route path="privacy" element={<StaticPages />} />
+                    <Route path="terms" element={<StaticPages />} />
 
-                  {/* Auth Forms */}
-                  <Route path="login" element={<AuthPages />} />
-                  <Route path="register" element={<AuthPages />} />
-                  <Route path="forgot-password" element={<AuthPages />} />
-                  <Route path="reset-password" element={<AuthPages />} />
-                </Route>
+                    {/* Auth Forms */}
+                    <Route path="login" element={<AuthPages />} />
+                    <Route path="register" element={<AuthPages />} />
+                    <Route path="forgot-password" element={<AuthPages />} />
+                    <Route path="reset-password" element={<AuthPages />} />
+                  </Route>
 
-                {/* Customer Dashboard Portal */}
-                <Route path="/customer" element={<CustomerLayout />}>
-                  <Route index element={<Navigate to="/customer/orders" replace />} />
-                  <Route path="profile" element={<CustomerProfile />} />
-                  <Route path="orders" element={<CustomerOrders />} />
-                  <Route path="addresses" element={<CustomerAddresses />} />
-                  <Route path="wishlist" element={<CustomerWishlist />} />
-                  <Route path="order-details/:id" element={<CustomerOrderDetails />} />
-                </Route>
+                  {/* Customer Dashboard Portal */}
+                  <Route path="/customer" element={<CustomerLayout />}>
+                    <Route index element={<Navigate to="/customer/orders" replace />} />
+                    <Route path="profile" element={<CustomerProfile />} />
+                    <Route path="orders" element={<CustomerOrders />} />
+                    <Route path="addresses" element={<CustomerAddresses />} />
+                    <Route path="wishlist" element={<CustomerWishlist />} />
+                    <Route path="order-details/:id" element={<CustomerOrderDetails />} />
+                  </Route>
 
-                {/* Vendor Dashboard Portal */}
-                <Route path="/vendor" element={<VendorLayout />}>
-                  <Route index element={<VendorDashboard />} />
-                  <Route path="store-profile" element={<VendorStoreProfile />} />
-                  <Route path="products" element={<VendorProducts />} />
-                  <Route path="inventory" element={<VendorInventory />} />
-                  <Route path="orders" element={<VendorOrders />} />
-                  <Route path="coupons" element={<VendorCoupons />} />
-                  <Route path="analytics" element={<VendorDashboard />} /> {/* Analytics view */}
-                  <Route path="wallet" element={<VendorWallet />} />
-                  <Route path="reviews" element={<VendorReviews />} />
-                </Route>
+                  {/* Vendor Dashboard Portal */}
+                  <Route path="/vendor" element={<VendorLayout />}>
+                    <Route index element={<VendorDashboard />} />
+                    <Route path="store-profile" element={<VendorStoreProfile />} />
+                    <Route path="products" element={<VendorProducts />} />
+                    <Route path="inventory" element={<VendorInventory />} />
+                    <Route path="orders" element={<VendorOrders />} />
+                    <Route path="coupons" element={<VendorCoupons />} />
+                    <Route path="analytics" element={<VendorDashboard />} /> {/* Analytics view */}
+                    <Route path="wallet" element={<VendorWallet />} />
+                    <Route path="reviews" element={<VendorReviews />} />
+                  </Route>
 
-                {/* Super Admin Dashboard Portal */}
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route index element={<AdminDashboard />} />
-                  <Route path="analytics" element={<AdminAnalytics />} />
-                  <Route path="vendors" element={<AdminVendors />} />
-                  <Route path="customers" element={<AdminCustomers />} />
-                  <Route path="products" element={<AdminProducts />} />
-                  <Route path="catalog" element={<AdminCatalog />} />
-                  <Route path="orders" element={<AdminOrders />} />
-                  <Route path="withdrawals" element={<AdminWithdrawals />} />
-                  <Route path="tickets" element={<AdminTickets />} />
-                  <Route path="settings" element={<AdminSettings />} />
-                </Route>
+                  {/* Super Admin Dashboard Portal */}
+                  <Route path="/admin" element={<AdminLayout />}>
+                    <Route index element={<AdminDashboard />} />
+                    <Route path="analytics" element={<AdminAnalytics />} />
+                    <Route path="vendors" element={<AdminVendors />} />
+                    <Route path="customers" element={<AdminCustomers />} />
+                    <Route path="products" element={<AdminProducts />} />
+                    <Route path="catalog" element={<AdminCatalog />} />
+                    <Route path="orders" element={<AdminOrders />} />
+                    <Route path="withdrawals" element={<AdminWithdrawals />} />
+                    <Route path="tickets" element={<AdminTickets />} />
+                    <Route path="settings" element={<AdminSettings />} />
+                  </Route>
 
-                {/* Wildcard Fallback */}
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
+                  {/* Wildcard Fallback */}
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </SocketManager>
             </WishlistProvider>
           </CartProvider>
         </AuthProvider>

@@ -11,6 +11,7 @@ import { productService } from '../../services/product';
 import { orderService } from '../../services/order';
 import Loader from '../../components/Loader/Loader';
 import EmptyState from '../../components/EmptyState/EmptyState';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import styles from './AdminPortal.module.css';
 
 // ----------------------------------------------------
@@ -80,21 +81,18 @@ export const AdminDashboard = () => {
       </div>
 
       {/* Monthly Sales Volume */}
-      <div className={styles.chartContainer}>
+      <div className={styles.chartContainer} style={{ height: '400px' }}>
         <h3 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '18px', fontWeight: '600', marginBottom: '24px' }}>Platform Monthly GMV ($)</h3>
-        <div className={styles.chart}>
-          {stats.monthlyAnalytics.map((m, i) => {
-            const pct = (m.sales / maxVal) * 100;
-            return (
-              <div key={i} className={styles.chartBarWrapper}>
-                <div className={styles.chartBar} style={{ height: `${pct}%` }}>
-                  <div className={styles.chartTooltip}>Sales: ${m.sales} (Rev: ${m.revenue.toFixed(0)})</div>
-                </div>
-                <span style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '8px' }}>{m.month}</span>
-              </div>
-            );
-          })}
-        </div>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={stats.monthlyAnalytics} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Bar dataKey="sales" name="Total Sales ($)" fill="var(--primary-color)" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="revenue" name="Platform Revenue ($)" fill="#10B981" radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

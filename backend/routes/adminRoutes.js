@@ -25,19 +25,31 @@ router.get('/dashboard', async (req, res) => {
     const totalSales = orders.reduce((sum, o) => sum + o.total, 0);
     const commissionEarned = totalSales * 0.10; // Assume 10% average platform commission fees
 
+    const orderData = await Order.aggregate([
+      {
+        $group: {
+          _id: { $substr: ["$date", 0, 7] },
+          sales: { $sum: "$total" }
+        }
+      },
+      { $sort: { _id: 1 } },
+      { $limit: 6 }
+    ]);
+
+    const monthlyAnalytics = orderData.map(d => ({
+      month: d._id, // e.g. "2023-10"
+      sales: d.sales,
+      revenue: d.sales * 0.10
+    }));
+
     res.json({
       totalVendors,
       totalProducts,
       totalSales,
       commissionEarned,
       openTickets: openTicketsCount,
-      monthlyAnalytics: [
-        { month: 'Jan', sales: 12000, revenue: 1200 },
-        { month: 'Feb', sales: 15000, revenue: 1500 },
-        { month: 'Mar', sales: 18000, revenue: 1800 },
-        { month: 'Apr', sales: 22000, revenue: 2200 },
-        { month: 'May', sales: 28000, revenue: 2800 },
-        { month: 'Jun', sales: totalSales > 0 ? Math.round(totalSales) : 34000, revenue: commissionEarned > 0 ? Math.round(commissionEarned) : 3400 }
+      monthlyAnalytics: monthlyAnalytics.length > 0 ? monthlyAnalytics : [
+        { month: 'No Data', sales: 0, revenue: 0 }
       ]
     });
   } catch (error) {

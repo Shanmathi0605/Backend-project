@@ -29,6 +29,7 @@ export const ProductDetails = () => {
   const [activeImage, setActiveImage] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
+  const [selectedOptions, setSelectedOptions] = useState({});
 
   // Review Form States
   const [reviewRating, setReviewRating] = useState(5);
@@ -43,6 +44,16 @@ export const ProductDetails = () => {
       setProduct(prod);
       setActiveImage(prod.images[0]);
       setQuantity(1);
+
+      if (prod.variants && prod.variants.length > 0) {
+        const initialOpts = {};
+        prod.variants.forEach(v => {
+          if (v.options && v.options.length > 0) {
+            initialOpts[v.name] = v.options[0];
+          }
+        });
+        setSelectedOptions(initialOpts);
+      }
 
       // Load related products from same category
       const allProds = await productService.getProducts({ category: prod.category });
@@ -66,8 +77,13 @@ export const ProductDetails = () => {
     }
   };
 
+  const getVariantString = () => {
+    if (Object.keys(selectedOptions).length === 0) return null;
+    return Object.entries(selectedOptions).map(([k, v]) => `${k}: ${v}`).join(', ');
+  };
+
   const handleBuyNow = () => {
-    addToCart(product, quantity);
+    addToCart(product, quantity, getVariantString());
     navigate('/cart');
   };
 
@@ -187,6 +203,25 @@ export const ProductDetails = () => {
           <div className={styles.actions}>
             {product.stock > 0 ? (
               <>
+                {product.variants && product.variants.filter(v => v.name && v.options && v.options.length > 0).length > 0 && (
+                  <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
+                    {product.variants.filter(v => v.name && v.options && v.options.length > 0).map((variant, idx) => (
+                      <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <span style={{ fontSize: '14px', fontWeight: '600' }}>{variant.name}:</span>
+                        <select 
+                          style={{ padding: '8px 12px', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-sm)', backgroundColor: 'var(--card-bg)' }}
+                          value={selectedOptions[variant.name] || ''}
+                          onChange={(e) => setSelectedOptions(prev => ({ ...prev, [variant.name]: e.target.value }))}
+                        >
+                          {variant.options.map((opt, oIdx) => (
+                            <option key={oIdx} value={opt}>{opt}</option>
+                          ))}
+                        </select>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
                 <div className={styles.qtyRow}>
                   <span style={{ fontSize: '14px', fontWeight: '600' }}>Quantity:</span>
                   <div className={styles.qtySelector}>
@@ -200,7 +235,7 @@ export const ProductDetails = () => {
                 </div>
 
                 <div className={styles.buttonGroup}>
-                  <button className={styles.btnPrimary} onClick={() => addToCart(product, quantity)}>
+                  <button className={styles.btnPrimary} onClick={() => addToCart(product, quantity, getVariantString())}>
                     <FiShoppingBag /> Add to Cart
                   </button>
                   <button className={styles.btnSecondary} onClick={handleBuyNow}>

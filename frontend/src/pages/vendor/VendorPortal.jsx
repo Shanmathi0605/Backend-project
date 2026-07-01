@@ -11,6 +11,7 @@ import { productService } from '../../services/product';
 import Loader from '../../components/Loader/Loader';
 import EmptyState from '../../components/EmptyState/EmptyState';
 import { api } from '../../services/api';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import styles from './VendorPortal.module.css';
 
 // ----------------------------------------------------
@@ -82,21 +83,17 @@ export const VendorDashboard = () => {
       </div>
 
       {/* Interactive Bar Chart */}
-      <div className={styles.chartContainer}>
+      <div className={styles.chartContainer} style={{ height: '400px' }}>
         <h3 className={styles.chartTitle}>Monthly Sales Volume ($)</h3>
-        <div className={styles.chart}>
-          {stats.recentSales.map((s, idx) => {
-            const pct = (s.amount / maxSaleAmt) * 100;
-            return (
-              <div key={idx} className={styles.chartBarWrapper}>
-                <div className={styles.chartBar} style={{ height: `${pct}%` }}>
-                  <div className={styles.chartTooltip}>${s.amount}</div>
-                </div>
-                <span className={styles.chartLabel}>{s.month}</span>
-              </div>
-            );
-          })}
-        </div>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={stats.recentSales} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Bar dataKey="amount" name="Sales ($)" fill="var(--primary-color)" radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
@@ -178,6 +175,7 @@ export const VendorProducts = () => {
   const [pBrand, setPBrand] = useState('Generic');
   const [pImage, setPImage] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [pVariants, setPVariants] = useState([]);
 
   const loadProducts = async () => {
     try {
@@ -204,6 +202,7 @@ export const VendorProducts = () => {
     setPCategory('Electronics');
     setPBrand('Generic');
     setPImage('');
+    setPVariants([]);
     setShowModal(true);
   };
 
@@ -217,6 +216,7 @@ export const VendorProducts = () => {
     setPCategory(p.category);
     setPBrand(p.brand);
     setPImage(p.images && p.images[0] ? p.images[0] : '');
+    setPVariants(p.variants ? p.variants.map(v => ({ name: v.name, options: v.options.join(', ') })) : []);
     setShowModal(true);
   };
 
@@ -256,7 +256,11 @@ export const VendorProducts = () => {
       stock: pStock,
       category: pCategory,
       brand: pBrand,
-      images: pImage ? [pImage] : []
+      images: pImage ? [pImage] : [],
+      variants: pVariants.filter(v => v.name.trim()).map(v => ({
+        name: v.name.trim(),
+        options: v.options.split(',').map(o => o.trim()).filter(Boolean)
+      }))
     };
 
     try {
@@ -410,6 +414,37 @@ export const VendorProducts = () => {
                   <input type="number" value={pStock} onChange={(e) => setPStock(e.target.value)} style={{ width: '100%', padding: '10px', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-md)' }} required />
                 </div>
               </div>
+              
+              {/* Product Variants Section */}
+              <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '16px', marginTop: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                  <label style={{ fontSize: '14px', fontWeight: '600' }}>Product Variants (Optional)</label>
+                  <button type="button" onClick={() => setPVariants([...pVariants, { name: '', options: '' }])} style={{ fontSize: '12px', padding: '4px 8px', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-sm)', background: 'var(--bg-color)', cursor: 'pointer' }}>+ Add Variant</button>
+                </div>
+                {pVariants.map((v, i) => (
+                  <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 2fr auto', gap: '12px', marginBottom: '12px', alignItems: 'end' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '11px', color: 'var(--text-secondary)' }}>Variant Name (e.g. Size)</label>
+                      <input type="text" value={v.name} onChange={(e) => {
+                        const newV = [...pVariants];
+                        newV[i].name = e.target.value;
+                        setPVariants(newV);
+                      }} style={{ width: '100%', padding: '8px', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-md)' }} />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '11px', color: 'var(--text-secondary)' }}>Options (comma separated)</label>
+                      <input type="text" placeholder="S, M, L, XL" value={v.options} onChange={(e) => {
+                        const newV = [...pVariants];
+                        newV[i].options = e.target.value;
+                        setPVariants(newV);
+                      }} style={{ width: '100%', padding: '8px', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-md)' }} />
+                    </div>
+                    <button type="button" onClick={() => setPVariants(pVariants.filter((_, idx) => idx !== i))} style={{ padding: '8px', color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer' }}><FiTrash2 /></button>
+                  </div>
+                ))}
+                {pVariants.length === 0 && <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>No variants added. Product will be sold as a single standard item.</p>}
+              </div>
+
               <button type="submit" style={{ backgroundColor: 'var(--primary-color)', color: 'var(--card-bg)', padding: '12px', borderRadius: 'var(--border-radius-md)', fontWeight: '600', marginTop: '12px' }}>
                 {editingId ? 'Save Changes' : 'Publish Product'}
               </button>

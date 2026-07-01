@@ -352,4 +352,56 @@ router.post('/reset-password', async (req, res) => {
   }
 });
 
+// @desc    Get user cart
+// @route   GET /api/auth/cart
+router.get('/cart', protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).populate('cart.product');
+    res.json(user.cart);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// @desc    Update user cart
+// @route   PUT /api/auth/cart
+router.put('/cart', protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    user.cart = req.body.cartItems.map(item => ({
+      product: item.product.id || item.product._id,
+      quantity: item.quantity,
+      variant: item.variant || null
+    }));
+    await user.save();
+    res.json(user.cart);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// @desc    Get user wishlist
+// @route   GET /api/auth/wishlist
+router.get('/wishlist', protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).populate('wishlist');
+    res.json(user.wishlist);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// @desc    Update user wishlist
+// @route   PUT /api/auth/wishlist
+router.put('/wishlist', protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    user.wishlist = req.body.wishlist.map(item => item.id || item._id);
+    await user.save();
+    res.json(user.wishlist);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 export default router;

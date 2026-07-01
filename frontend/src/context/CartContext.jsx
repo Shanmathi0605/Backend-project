@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useToast } from './ToastContext';
+import { api, isMockEnabled } from '../services/api';
 
 const CartContext = createContext(null);
 
@@ -15,45 +16,71 @@ export const CartProvider = ({ children }) => {
   const { addToast } = useToast();
 
   useEffect(() => {
-    const savedCart = localStorage.getItem('app_cart');
-    if (savedCart) {
-      setCartItems(JSON.parse(savedCart));
-    }
+    const fetchCart = async () => {
+      const token = localStorage.getItem('app_token');
+      if (token && !isMockEnabled) {
+        try {
+          const res = await api.get('/auth/cart');
+          if (res.data) {
+            const formatted = res.data.map(item => ({ product: item.product, quantity: item.quantity, variant: item.variant }));
+            setCartItems(formatted);
+            localStorage.setItem('app_cart', JSON.stringify(formatted));
+            return;
+          }
+        } catch (e) {
+          console.error('Failed to fetch cart', e);
+        }
+      }
+      const savedCart = localStorage.getItem('app_cart');
+      if (savedCart) {
+        setCartItems(JSON.parse(savedCart));
+      }
+    };
+    fetchCart();
   }, []);
 
-  const saveCart = (items) => {
+  const saveCart = async (items) => {
     setCartItems(items);
     localStorage.setItem('app_cart', JSON.stringify(items));
+    
+    const token = localStorage.getItem('app_token');
+    if (token && !isMockEnabled) {
+      try {
+        await api.put('/auth/cart', { cartItems: items });
+      } catch (e) {
+        console.error('Failed to sync cart', e);
+      }
+    }
   };
 
-  const addToCart = (product, quantity = 1) => {
+  const addToCart = (product, quantity = 1, variant = null) => {
     const pId = product.id || product._id;
-    const existingIndex = cartItems.findIndex((item) => (item.product.id || item.product._id) === pId);
+    const existingIndex = cartItems.findIndex((item) => (item.product.id || item.product._id) === pId && item.variant === variant);
     let newItems = [...cartItems];
 
     if (existingIndex > -1) {
       newItems[existingIndex].quantity += quantity;
     } else {
-      newItems.push({ product, quantity });
+      newItems.push({ product, quantity, variant });
     }
 
     saveCart(newItems);
-    addToast(`${product.name} added to cart!`, 'success');
+    addToast(`${product.name} ${variant ? `(${variant}) ` : ''}added to cart!`, 'success');
   };
 
-  const removeFromCart = (productId) => {
-    const filtered = cartItems.filter((item) => (item.product.id || item.product._id) !== productId);
+  const removeFromCart = (productId, variant = null) => {
+    const filtered = cartItems.filter((item) => !((item.product.id || item.product._id) === productId && item.variant === variant));
     saveCart(filtered);
     addToast('Item removed from cart', 'info');
   };
 
-  const updateQuantity = (productId, quantity) => {
+  const updateQuantity = (productId, quantity, variant = null) => {
     if (quantity <= 0) {
-      removeFromCart(productId);
+      removeFromCart(productId, variant);
       return;
     }
     const updated = cartItems.map((item) =>
-      (item.product.id || item.product._id) === productId ? { ...item, quantity } : item
+      ((item.product.id || item.product._id) === productId && item.variant === variant) ? { ...item, quantity } : item
     );
     saveCart(updated);
   };

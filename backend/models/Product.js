@@ -23,7 +23,11 @@ const productSchema = new mongoose.Schema({
   vendorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   vendorName: { type: String, required: true },
   isApproved: { type: Boolean, default: false },
-  reviews: [reviewSchema]
+  reviews: [reviewSchema],
+  variants: [{
+    name: { type: String },
+    options: [{ type: String }]
+  }]
 }, { 
   timestamps: true,
   toJSON: { virtuals: true },

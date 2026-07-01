@@ -43,6 +43,9 @@ const INITIAL_PRODUCTS = [
     vendorId: 'vendor-1',
     vendorName: 'TechNova Solutions',
     isApproved: true,
+    variants: [
+      { name: 'Color', options: ['Black', 'Silver', 'Midnight Blue'] }
+    ],
     reviews: [
       { id: 'rev-1', user: 'Sarah Connor', rating: 5, date: '2026-05-12', comment: 'Absolutely amazing noise reduction! Battery lasts forever.' },
       { id: 'rev-2', user: 'Marcus Wright', rating: 4, date: '2026-05-18', comment: 'Very comfortable, but standard audio cable could be longer.' }

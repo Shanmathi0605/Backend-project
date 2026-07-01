@@ -36,18 +36,38 @@ router.get('/:vendorId/dashboard', async (req, res) => {
     const totalProducts = await Product.countDocuments({ vendorId });
     const orders = await Order.find({ 'items.product.vendorId': vendorId });
 
+    const orderData = await Order.aggregate([
+      { $unwind: "$items" },
+      { $match: { "items.product.vendorId": vendorId } },
+      {
+        $group: {
+          _id: { $substr: ["$date", 0, 7] },
+          amount: { 
+            $sum: { 
+              $multiply: [
+                { $subtract: ["$items.product.price", { $multiply: ["$items.product.price", { $divide: [{ $ifNull: ["$items.product.discount", 0] }, 100] }] }] },
+                "$items.quantity"
+              ] 
+            } 
+          }
+        }
+      },
+      { $sort: { _id: 1 } },
+      { $limit: 6 }
+    ]);
+
+    const recentSales = orderData.map(d => ({
+      month: d._id,
+      amount: Math.round(d.amount)
+    }));
+
     res.json({
       totalProducts,
       totalSales: vendorUser.sales,
       walletBalance: vendorUser.walletBalance,
       totalOrders: orders.length,
-      recentSales: [
-        { month: 'Jan', amount: 320 },
-        { month: 'Feb', amount: 450 },
-        { month: 'Mar', amount: 680 },
-        { month: 'Apr', amount: 890 },
-        { month: 'May', amount: 1200 },
-        { month: 'Jun', amount: vendorUser.sales > 0 ? Math.round(vendorUser.sales) : 2400 }
+      recentSales: recentSales.length > 0 ? recentSales : [
+        { month: 'No Data', amount: 0 }
       ]
     });
   } catch (error) {

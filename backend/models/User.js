@@ -13,7 +13,13 @@ const userSchema = new mongoose.Schema({
   walletBalance: { type: Number, default: 0 },
   sales: { type: Number, default: 0 },
   joined: { type: String, default: () => new Date().toISOString().split('T')[0] },
-  status: { type: String, enum: ['Pending Approval', 'Approved', 'Rejected', 'Suspended'], default: 'Approved' }
+  status: { type: String, enum: ['Pending Approval', 'Approved', 'Rejected', 'Suspended'], default: 'Approved' },
+  cart: [{
+    product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+    quantity: { type: Number, default: 1 },
+    variant: { type: String }
+  }],
+  wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }]
 }, { timestamps: true });
 
 // Hash password before saving

@@ -3,8 +3,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import morgan from 'morgan';
 import connectDB from './config/db.js';
-
-// Route Imports
+import http from 'http';
+import { Server } from 'socket.io';
 import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
@@ -48,9 +48,40 @@ app.get('/', (req, res) => {
   res.json({ message: 'NovaCart Multi Vendor E-Commerce Server API is running.' });
 });
 
+// Create HTTP server
+const server = http.createServer(app);
+
+// Setup Socket.io
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"]
+  }
+});
+
+io.on('connection', (socket) => {
+  console.log('A user connected via WebSocket:', socket.id);
+
+  // Users can join a room based on their ID to receive personal notifications
+  socket.on('join_room', (userId) => {
+    socket.join(userId);
+    console.log(`User ${userId} joined room`);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+  });
+});
+
+// Attach io to req object so routes can emit events
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
 // Port
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Express API Server listening on port ${PORT}`);
 });
 export default app;
