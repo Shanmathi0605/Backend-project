@@ -87,6 +87,13 @@ export const Navbar = () => {
           <li className={`${styles.navLink} ${isLinkActive('/brands') ? styles.activeLink : ''}`}>
             <Link to="/brands" onClick={() => setMobileMenuOpen(false)}>Brands</Link>
           </li>
+          
+          {!isAuthenticated && (
+            <li className={styles.mobileGuestLinks}>
+              <Link to="/login" onClick={() => setMobileMenuOpen(false)} className={styles.loginLink}>Login</Link>
+              <Link to="/register" onClick={() => setMobileMenuOpen(false)} className={styles.registerLink}>Register</Link>
+            </li>
+          )}
         </ul>
 
         {/* Search Bar */}

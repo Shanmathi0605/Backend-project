@@ -400,7 +400,7 @@ export const CustomerAddresses = () => {
 // 4. MY WISHLIST
 // ----------------------------------------------------
 export const CustomerWishlist = () => {
-  const { wishlistItems, clearWishlist } = useWishlist();
+  const { wishlistItems, clearWishlist, toggleWishlist } = useWishlist();
 
   return (
     <div>
@@ -416,7 +416,34 @@ export const CustomerWishlist = () => {
       {wishlistItems.length > 0 ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '24px' }}>
           {wishlistItems.map((prod) => (
-            <ProductCard key={prod.id} product={prod} />
+            <div key={prod.id || prod._id} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <ProductCard product={prod} />
+              <button
+                onClick={() => toggleWishlist(prod)}
+                style={{
+                  width: '100%',
+                  backgroundColor: '#FEF2F2',
+                  color: '#EF4444',
+                  border: '1px solid #FCA5A5',
+                  padding: '10px',
+                  borderRadius: 'var(--border-radius-md)',
+                  fontWeight: '600',
+                  fontSize: '13px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '8px',
+                  transition: 'background-color 0.2s, transform 0.1s'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#FECACA'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#FEF2F2'}
+                onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.98)'}
+                onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
+              >
+                <FiTrash2 /> Remove Item
+              </button>
+            </div>
           ))}
         </div>
       ) : (
@@ -877,213 +904,92 @@ export const CustomerOrderSuccess = () => {
     setLoaded(true);
   }, []);
 
-  // If no order data found, redirect to home
-  useEffect(() => {
-    if (loaded && !order) {
-      navigate('/', { replace: true });
-    }
-  }, [loaded, order, navigate]);
+  if (!loaded) return <Loader text="Loading order details..." />;
+  if (loaded && !order) {
+    navigate('/', { replace: true });
+    return null;
+  }
 
-  if (!loaded || !order) return <Loader text="Loading order details..." />;
-
-  const drawCircle = {
-    hidden: { pathLength: 0, opacity: 0 },
-    visible: {
-      pathLength: 1,
-      opacity: 1,
-      transition: {
-        pathLength: { type: 'spring', duration: 1.2, bounce: 0 },
-        opacity: { duration: 0.01 }
-      }
-    }
-  };
-
-  const drawCheck = {
-    hidden: { pathLength: 0, opacity: 0 },
-    visible: {
-      pathLength: 1,
-      opacity: 1,
-      transition: {
-        delay: 0.6,
-        pathLength: { type: 'spring', duration: 0.8, bounce: 0 },
-        opacity: { delay: 0.6, duration: 0.01 }
-      }
-    }
-  };
-
-  const textContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.035,
-        delayChildren: 1.2,
-      }
-    }
-  };
-
-  const textLetter = {
-    hidden: { opacity: 0, x: -6, y: 4 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      y: 0,
-      transition: {
-        type: 'spring',
-        damping: 14,
-        stiffness: 110,
-      }
-    }
-  };
-
-  const cardContainer = {
-    hidden: { scale: 0.9, opacity: 0 },
-    visible: {
-      scale: 1,
-      opacity: 1,
-      transition: {
-        type: 'spring',
-        duration: 0.8,
-        bounce: 0.25
-      }
-    }
-  };
+  const firstItem = order.items && order.items[0] ? order.items[0] : null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '60vh', padding: '24px' }}>
-      <div style={{ width: '100%', maxWidth: '520px', marginBottom: '24px' }}>
-        <div style={{ display: 'flex', gap: '8px', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px', alignItems: 'center' }}>
-          <span style={{ color: 'var(--text-secondary)' }}>Cart</span>
-          <FiChevronRight size={12} />
-          <span style={{ color: 'var(--text-secondary)' }}>Checkout</span>
-          <FiChevronRight size={12} />
-          <span style={{ color: 'var(--text-secondary)' }}>Payment</span>
-          <FiChevronRight size={12} />
-          <span style={{ color: 'var(--text-primary)', fontWeight: '600' }}>Order Success</span>
+    <div style={{ display: 'flex', justifyContent: 'center', backgroundColor: '#F9FAFB', padding: '40px 16px', minHeight: '80vh' }}>
+      <div style={{ backgroundColor: '#FFFFFF', borderRadius: '32px', padding: '32px 24px', width: '100%', maxWidth: '400px', boxShadow: '0 10px 40px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column' }}>
+        
+        {/* Illustration */}
+        <div style={{ alignSelf: 'center', width: '80px', height: '80px', borderRadius: '50%', backgroundColor: '#D1FAE5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '40px', marginBottom: '24px' }}>
+          🛵
         </div>
-      </div>
-
-      <motion.div
-        variants={cardContainer}
-        initial="hidden"
-        animate="visible"
-        style={{ width: '100%', maxWidth: '520px', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-lg)', padding: '40px 32px', textAlign: 'center', boxShadow: 'var(--shadow-md)' }}
-      >
-        {/* Animated SVG Checkmark Track */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-          <svg width="80" height="80" viewBox="0 0 100 100" style={{ overflow: 'visible' }}>
-            <motion.circle
-              cx="50"
-              cy="50"
-              r="42"
-              stroke="#10B981"
-              strokeWidth="6"
-              strokeLinecap="round"
-              fill="transparent"
-              variants={drawCircle}
-              initial="hidden"
-              animate="visible"
-            />
-            <motion.path
-              d="M32 52 L45 65 L68 36"
-              stroke="#10B981"
-              strokeWidth="6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill="transparent"
-              variants={drawCheck}
-              initial="hidden"
-              animate="visible"
-            />
-          </svg>
-        </div>
-
-        {/* Dynamic Typewriting Title */}
-        <motion.h2
-          variants={textContainer}
-          initial="hidden"
-          animate="visible"
-          style={{
-            fontFamily: 'Outfit, sans-serif',
-            fontSize: '28px',
-            fontWeight: '700',
-            color: 'var(--text-primary)',
-            display: 'flex',
-            justifyContent: 'center',
-            flexWrap: 'wrap',
-            gap: '0.04em',
-            margin: '0 auto 12px'
-          }}
-        >
-          {Array.from("Order Placed Successfully!").map((char, index) => (
-            <motion.span key={index} variants={textLetter} style={{ display: 'inline-block' }}>
-              {char === " " ? "\u00A0" : char}
-            </motion.span>
-          ))}
-        </motion.h2>
-
-        {/* Order Tracker */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '32px 0 24px', position: 'relative' }}>
-          <div style={{ position: 'absolute', top: '50%', left: '10%', right: '10%', height: '4px', backgroundColor: '#E5E7EB', zIndex: 0, transform: 'translateY(-50%)' }}></div>
-          <div style={{ position: 'absolute', top: '50%', left: '10%', width: '0%', height: '4px', backgroundColor: '#10B981', zIndex: 1, transform: 'translateY(-50%)' }}></div>
+        
+        {/* Headings */}
+        <h2 style={{ textAlign: 'center', fontSize: '24px', fontWeight: '800', color: '#111827', margin: '0 0 8px 0', fontFamily: 'Outfit, sans-serif' }}>
+          Order Status
+        </h2>
+        <p style={{ textAlign: 'center', fontSize: '15px', color: '#6B7280', margin: '0 0 32px 0' }}>
+          Your package is on the way
+        </p>
+        
+        {/* Item Card */}
+        {firstItem && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', backgroundColor: '#F9FAFB', border: '1px solid #F3F4F6', padding: '16px', borderRadius: '16px', marginBottom: '24px' }}>
+            <div style={{ width: '56px', height: '56px', backgroundColor: '#F3F4F6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+              <img src={firstItem.product.images[0]} alt={firstItem.product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+            <div style={{ flexGrow: 1, minWidth: 0 }}>
+              <p style={{ fontSize: '12px', color: '#6B7280', margin: '0 0 2px' }}>{firstItem.product.category || 'Product'}</p>
+              <p style={{ fontSize: '14px', fontWeight: '700', color: '#111827', margin: '0 0 2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{firstItem.product.name}</p>
+              <p style={{ fontSize: '12px', color: '#6B7280', margin: 0 }}>Qty : {firstItem.quantity}</p>
+            </div>
+            <div style={{ fontWeight: '700', fontSize: '14px', color: '#111827' }}>
+              ${order.total.toFixed(2)}
+            </div>
+          </div>
+        )}
+        
+        {/* Order Summary Card */}
+        <div style={{ backgroundColor: '#F9FAFB', border: '1px solid #F3F4F6', borderRadius: '16px', padding: '20px', marginBottom: '32px' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#111827', margin: '0 0 16px 0' }}>Order Summary</h3>
           
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 2, backgroundColor: 'var(--card-bg)', padding: '0 8px' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#10B981', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><FiCheckCircle /></div>
-            <span style={{ fontSize: '12px', fontWeight: '600', marginTop: '8px', color: 'var(--text-primary)' }}>Placed</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px' }}>
+            <span style={{ fontSize: '13px', color: '#6B7280' }}>Order ID</span>
+            <span style={{ fontSize: '13px', fontWeight: '500', color: '#111827' }}>{order._id || order.id || '153468790876'}</span>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 2, backgroundColor: 'var(--card-bg)', padding: '0 8px' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#E5E7EB', color: '#9CA3AF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>2</div>
-            <span style={{ fontSize: '12px', fontWeight: '600', marginTop: '8px', color: 'var(--text-secondary)' }}>Processing</span>
+          
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px' }}>
+            <span style={{ fontSize: '13px', color: '#6B7280' }}>Shipping Address</span>
+            <span style={{ fontSize: '13px', fontWeight: '500', color: '#111827', textAlign: 'right', maxWidth: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {order.shippingAddress?.street ? `${order.shippingAddress.street}, ${order.shippingAddress.city}` : '45 onye\'s house'}
+            </span>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 2, backgroundColor: 'var(--card-bg)', padding: '0 8px' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#E5E7EB', color: '#9CA3AF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>3</div>
-            <span style={{ fontSize: '12px', fontWeight: '600', marginTop: '8px', color: 'var(--text-secondary)' }}>Shipped</span>
+          
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px' }}>
+            <span style={{ fontSize: '13px', color: '#6B7280' }}>Tracking ID</span>
+            <span style={{ fontSize: '13px', fontWeight: '500', color: '#111827' }}>{order._id || order.id || '153468790876'}</span>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 2, backgroundColor: 'var(--card-bg)', padding: '0 8px' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#E5E7EB', color: '#9CA3AF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>4</div>
-            <span style={{ fontSize: '12px', fontWeight: '600', marginTop: '8px', color: 'var(--text-secondary)' }}>Delivered</span>
+          
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: '13px', color: '#6B7280' }}>Estimated Delivery Date</span>
+            <span style={{ fontSize: '13px', fontWeight: '500', color: '#111827' }}>
+              {new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: '2-digit' })}; 04:54pm
+            </span>
           </div>
         </div>
-
-        {/* Animated Receipt Printing */}
-        <div style={{ position: 'relative', margin: '32px 0 24px', padding: '0 16px' }}>
-          {/* Printer Slot */}
-          <div style={{ height: '8px', backgroundColor: '#374151', borderRadius: '4px', margin: '0 16px', position: 'relative', zIndex: 2, boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.5)' }}></div>
-          {/* Receipt Paper */}
-          <motion.div 
-            initial={{ height: 0, opacity: 0, y: -20 }}
-            animate={{ height: 'auto', opacity: 1, y: 0 }}
-            transition={{ delay: 2, duration: 1.5, ease: "easeOut" }}
-            style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', padding: '24px', margin: '-4px 24px 0', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '12px', position: 'relative', zIndex: 1, boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed #E5E7EB', paddingBottom: '12px', marginBottom: '8px' }}>
-              <span style={{ fontSize: '16px', fontWeight: '700', color: '#111827', fontFamily: 'monospace' }}>ORDER RECEIPT</span>
-              <span style={{ fontSize: '14px', color: '#6B7280', fontFamily: 'monospace' }}>#{order._id || order.id || Math.floor(Math.random() * 1000000)}</span>
-            </div>
-            <p style={{ fontSize: '13px', color: '#374151', fontFamily: 'monospace' }}>Delivery To:<br/><strong>{order.shippingAddress?.name || 'Customer'}</strong><br/>{order.shippingAddress?.street}, {order.shippingAddress?.city}</p>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px dashed #E5E7EB', paddingTop: '16px', marginTop: '8px' }}>
-              <span style={{ fontSize: '14px', fontWeight: '600', color: '#374151', fontFamily: 'monospace' }}>TOTAL PAID:</span>
-              <span style={{ fontSize: '16px', fontWeight: '700', color: '#111827', fontFamily: 'monospace' }}>${order.total?.toFixed(2)}</span>
-            </div>
-          </motion.div>
-          {/* Zigzag bottom of receipt */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2.5 }}
-            style={{ margin: '0 24px', height: '10px', background: 'linear-gradient(-45deg, transparent 6px, #fff 0), linear-gradient(45deg, transparent 6px, #fff 0)', backgroundSize: '12px 12px', backgroundRepeat: 'repeat-x', filter: 'drop-shadow(0px 2px 2px rgba(0,0,0,0.05))', position: 'relative', zIndex: 1, marginTop: '-2px' }}
-          ></motion.div>
-        </div>
-
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <button onClick={() => navigate('/')} className={styles.primaryBtn} style={{ width: '100%' }}>
-            Go to Homepage
-          </button>
-          <button onClick={() => navigate('/shop')} className={styles.primaryBtn} style={{ width: '100%', backgroundColor: 'transparent', border: '1px solid var(--primary-color)', color: 'var(--primary-color)' }}>
-            Continue Shopping
-          </button>
-        </div>
-      </motion.div>
+        
+        {/* Track Order Button */}
+        <button 
+          onClick={() => navigate(`/customer/order-details/${order._id || order.id || ''}`)}
+          style={{ width: '100%', backgroundColor: '#111827', color: '#FFFFFF', padding: '16px', borderRadius: '100px', fontWeight: '600', fontSize: '15px', border: 'none', cursor: 'pointer', marginBottom: '16px', transition: 'background-color 0.2s' }}
+          onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#374151'}
+          onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#111827'}
+        >
+          Track order
+        </button>
+        
+        {/* Confirmed Text */}
+        <p style={{ textAlign: 'center', fontSize: '12px', color: '#10B981', margin: 0, fontWeight: '500' }}>
+          Your order is confirmed and in transit
+        </p>
+      </div>
     </div>
   );
 };

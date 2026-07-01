@@ -25,7 +25,7 @@
   }
   .container {
     height: 70px;
-    gap: 12px;
+    gap: 8px;
   }
   .logo {
     font-size: 20px;
@@ -293,6 +293,12 @@
   gap: 12px;
 }
 
+@media (max-width: 768px) {
+  .guestBtns {
+    display: none;
+  }
+}
+
 .loginLink {
   font-size: 14px;
   font-weight: 500;
@@ -318,6 +324,35 @@
 .registerLink:hover {
   background-color: var(--secondary-color);
   transform: translateY(-1px);
+}
+
+.mobileGuestLinks {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobileGuestLinks {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-color);
+  }
+  .mobileGuestLinks a {
+    text-align: center;
+    padding: 12px;
+    border-radius: var(--border-radius-md);
+    font-weight: 600;
+  }
+  .mobileGuestLinks .loginLink {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+  }
+  .mobileGuestLinks .registerLink {
+    background-color: var(--primary-color);
+    color: var(--card-bg);
+  }
 }
 
 /* Demo Role Switcher Dropdown */
