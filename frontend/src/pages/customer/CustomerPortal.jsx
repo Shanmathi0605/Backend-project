@@ -701,6 +701,42 @@ export const CustomerPayment = () => {
   const [cardCvv, setCardCvv] = useState('');
   const [processing, setProcessing] = useState(false);
 
+  const [showSimulationModal, setShowSimulationModal] = useState(false);
+  const [mockOrderData, setMockOrderData] = useState(null);
+
+  const handleSimulateSuccess = async () => {
+    if (!mockOrderData) return;
+    setShowSimulationModal(false);
+    setProcessing(true);
+    try {
+      // Verify mock payment signature on the backend
+      await api.post('/payment/verify', {
+        razorpay_order_id: mockOrderData.id,
+        razorpay_payment_id: `mock_pay_${Date.now()}`,
+        razorpay_signature: 'mock_signature'
+      });
+
+      // Place order in DB
+      const placed = await orderService.placeOrder(mockOrderData.orderData);
+      localStorage.setItem('last_order_placed', JSON.stringify(placed));
+      clearCart();
+      addToast('Simulated payment success! Order placed successfully.', 'success');
+      navigate('/order-success');
+    } catch (err) {
+      addToast(err.message || 'Payment verification failed', 'error');
+    } finally {
+      setProcessing(false);
+      setMockOrderData(null);
+    }
+  };
+
+  const handleSimulateFailure = () => {
+    setShowSimulationModal(false);
+    setMockOrderData(null);
+    setProcessing(false);
+    addToast('Simulated payment failed / cancelled by user.', 'error');
+  };
+
   // Guard: redirect to login if not authenticated
   useEffect(() => {
     if (!authLoading && !user) {
@@ -744,6 +780,13 @@ export const CustomerPayment = () => {
         // 1. Request a Razorpay order from the backend
         const res = await api.post('/payment/razorpay-order', { amount: total });
         const rzOrder = res.data;
+
+        if (rzOrder.isMock) {
+          setMockOrderData({ id: rzOrder.id, orderData });
+          setShowSimulationModal(true);
+          setProcessing(false);
+          return;
+        }
 
         // 2. Configure Razorpay Options
         const options = {
@@ -884,6 +927,95 @@ export const CustomerPayment = () => {
           </button>
         </form>
       </div>
+
+      {/* Razorpay Simulation Modal */}
+      {showSimulationModal && mockOrderData && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(15, 23, 42, 0.65)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 9999,
+          padding: '20px'
+        }}>
+          <div style={{
+            backgroundColor: 'var(--card-bg)',
+            border: '1px solid var(--border-color)',
+            borderRadius: '16px',
+            padding: '32px',
+            maxWidth: '460px',
+            width: '100%',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            textAlign: 'center'
+          }}>
+            {/* Header / Brand */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '20px' }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '6px', backgroundColor: '#3399FF', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 'bold', fontSize: '18px' }}>R</div>
+              <span style={{ fontSize: '18px', fontWeight: '700', color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>Razorpay Sandbox</span>
+            </div>
+            
+            <h3 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '12px', color: 'var(--text-primary)' }}>Simulated Payment Gateway</h3>
+            <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '24px' }}>
+              Your configured Razorpay credentials failed authentication (401). We have automatically switched to safe Sandbox Simulation Mode.
+            </p>
+
+            <div style={{ backgroundColor: 'var(--body-bg)', padding: '16px', borderRadius: '12px', marginBottom: '24px', textAlign: 'left', border: '1px solid var(--border-color)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>Amount:</span>
+                <span style={{ fontWeight: '600', color: 'var(--text-primary)' }}>₹{(total * 83).toFixed(2)} (Equivalent to ${total.toFixed(2)})</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>Mock Order ID:</span>
+                <span style={{ fontFamily: 'monospace', color: 'var(--text-primary)' }}>{mockOrderData.id}</span>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button
+                type="button"
+                onClick={handleSimulateFailure}
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  borderRadius: '8px',
+                  border: '1px solid #EF4444',
+                  backgroundColor: 'transparent',
+                  color: '#EF4444',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                Simulate Failure
+              </button>
+              <button
+                type="button"
+                id="btn-simulate-success"
+                onClick={handleSimulateSuccess}
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  backgroundColor: '#10B981',
+                  color: '#fff',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                Simulate Success
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
