@@ -8,9 +8,10 @@ export const connectDB = async () => {
     } catch (error) {
       console.error(`MongoDB connection error: ${error.message}`);
       console.log('Retrying to connect in 5 seconds...');
-      setTimeout(connectWithRetry, 5000);
+      await new Promise(res => setTimeout(res, 5000));
+      return connectWithRetry();
     }
   };
-  connectWithRetry();
+  return await connectWithRetry();
 };
 export default connectDB;

@@ -31,6 +31,12 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
+// Attach io to req object so routes can emit events
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
 // Mount Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
@@ -73,10 +79,13 @@ io.on('connection', (socket) => {
   });
 });
 
-// Attach io to req object so routes can emit events
-app.use((req, res, next) => {
-  req.io = io;
-  next();
+// Global Error Handling Middleware
+app.use((err, req, res, next) => {
+  console.error('Unhandled Error:', err);
+  res.status(500).json({
+    success: false,
+    message: err.message || 'Internal Server Error'
+  });
 });
 
 // Port

@@ -1,0 +1,481 @@
+﻿
+> backend-project@0.0.0 lint
+> eslint .
+
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\App.jsx
+   1:8  error  'React' is defined but never used              no-unused-vars
+  30:3  error  'CustomerDashboard' is defined but never used  no-unused-vars
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\components\EmptyState\EmptyState.jsx
+  1:8  error  'React' is defined but never used  no-unused-vars
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\components\ErrorState\ErrorState.jsx
+  1:8  error  'React' is defined but never used  no-unused-vars
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\components\Footer\Footer.jsx
+  1:8  error  'React' is defined but never used  no-unused-vars
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\components\Loader\Loader.jsx
+  1:8  error  'React' is defined but never used  no-unused-vars
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\components\Navbar\Navbar.jsx
+   1:8   error  'React' is defined but never used                          no-unused-vars
+   3:34  error  'FiUser' is defined but never used                         no-unused-vars
+   3:77  error  'FiLayers' is defined but never used                       no-unused-vars
+  14:10  error  'roleMenuOpen' is assigned a value but never used          no-unused-vars
+  28:9   error  'handleDemoRoleSwitch' is assigned a value but never used  no-unused-vars
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\components\ProductCard\ProductCard.jsx
+  1:8  error  'React' is defined but never used  no-unused-vars
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\components\ScrollToTop\ScrollToTop.jsx
+  1:8  error  'React' is defined but never used  no-unused-vars
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\components\Sidebar\Sidebar.jsx
+  1:8   error  'React' is defined but never used            no-unused-vars
+  4:11  error  'FiUser' is defined but never used           no-unused-vars
+  4:19  error  'FiMapPin' is defined but never used         no-unused-vars
+  4:29  error  'FiHeart' is defined but never used          no-unused-vars
+  5:3   error  'FiSettings' is defined but never used       no-unused-vars
+  5:63  error  'FiMessageSquare' is defined but never used  no-unused-vars
+  6:56  error  'FiAlertCircle' is defined but never used    no-unused-vars
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\context\AuthContext.jsx
+   1:8   error  'React' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     no-unused-vars
+   7:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        react-refresh/only-export-components
+  14:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        react-refresh/only-export-components
+  35:7   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  33 |     const token = localStorage.getItem('app_token');
+  34 |     if (savedUser && token) {
+> 35 |       setUser(JSON.parse(savedUser));
+     |       ^^^^^^^ Avoid calling setState() directly within an effect
+  36 |     }
+  37 |     setLoading(false);
+  38 |   }, []);  react-hooks/set-state-in-effect
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\context\CartContext.jsx
+  1:8   error  'React' is defined but never used                                                                                               no-unused-vars
+  7:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\context\ToastContext.jsx
+   1:8   error    'React' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   no-unused-vars
+   7:14  error    Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      react-refresh/only-export-components
+  20:7   error    Error: Cannot access variable before it is declared
+
+`removeToast` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  18 |     setToasts((prev) => [...prev, { id, message, type, duration }]);
+  19 |     setTimeout(() => {
+> 20 |       removeToast(id);
+     |       ^^^^^^^^^^^ `removeToast` accessed before it is declared
+  21 |     }, duration);
+  22 |   }, []);
+  23 |
+
+  22 |   }, []);
+  23 |
+> 24 |   const removeToast = useCallback((id) => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 25 |     setToasts((prev) => prev.filter((t) => t.id !== id));
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 26 |   }, []);
+     | ^^^^^^^^^^ `removeToast` is declared here
+  27 |
+  28 |   const getIcon = (type) => {
+  29 |     switch (type) {  react-hooks/immutability
+  22:6   warning  React Hook useCallback has a missing dependency: 'removeToast'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    react-hooks/exhaustive-deps
+  24:35  error    Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. This value was memoized in source but not in compilation output.
+
+  22 |   }, []);
+  23 |
+> 24 |   const removeToast = useCallback((id) => {
+     |                                   ^^^^^^^^^
+> 25 |     setToasts((prev) => prev.filter((t) => t.id !== id));
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 26 |   }, []);
+     | ^^^^ Could not preserve existing memoization
+  27 |
+  28 |   const getIcon = (type) => {
+  29 |     switch (type) {                                                                                                                                                                                                react-hooks/preserve-manual-memoization
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\context\WishlistContext.jsx
+   1:8   error  'React' is defined but never used                                                                                               no-unused-vars
+   7:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  56:9   error  The value assigned to 'newItems' is not used in subsequent statements                                                           no-useless-assignment
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\layouts\AdminLayout.jsx
+  1:8  error  'React' is defined but never used  no-unused-vars
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\layouts\CustomerLayout.jsx
+  1:8  error  'React' is defined but never used  no-unused-vars
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\layouts\PublicLayout.jsx
+  1:8  error  'React' is defined but never used  no-unused-vars
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\layouts\VendorLayout.jsx
+  1:8  error  'React' is defined but never used  no-unused-vars
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\pages\admin\AdminPortal.jsx
+    1:8   error  'React' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                no-unused-vars
+    2:10  error  'Link' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 no-unused-vars
+    4:3   error  'FiGrid' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               no-unused-vars
+    4:24  error  'FiUsers' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              no-unused-vars
+    4:48  error  'FiFolder' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             no-unused-vars
+    4:58  error  'FiList' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               no-unused-vars
+    5:17  error  'FiInbox' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              no-unused-vars
+    5:26  error  'FiSliders' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+    5:37  error  'FiCheck' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              no-unused-vars
+    5:46  error  'FiX' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
+    7:10  error  'useAuth' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              no-unused-vars
+   40:9   error  'maxVal' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      no-unused-vars
+  140:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  138 |
+  139 |   useEffect(() => {
+> 140 |     loadVendors();
+      |     ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  141 |   }, []);
+  142 |
+  143 |   const handleStatusUpdate = async (id, status) => {              react-hooks/set-state-in-effect
+  148:14  error  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
+  279:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  277 |
+  278 |   useEffect(() => {
+> 279 |     loadAllProducts();
+      |     ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  280 |   }, []);
+  281 |
+  282 |   const handleStatusUpdate = async (id, isApproved) => {  react-hooks/set-state-in-effect
+  287:14  error  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
+  367:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  365 |
+  366 |   useEffect(() => {
+> 367 |     loadCatalog();
+      |     ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  368 |   }, []);
+  369 |
+  370 |   const handleAddCategory = async (e) => {                        react-hooks/set-state-in-effect
+  378:14  error  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
+  391:14  error  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
+  501:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  499 |
+  500 |   useEffect(() => {
+> 501 |     loadRequests();
+      |     ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  502 |   }, []);
+  503 |
+  504 |   const handleStatus = async (id, status) => {                  react-hooks/set-state-in-effect
+  509:14  error  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
+  580:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  578 |
+  579 |   useEffect(() => {
+> 580 |     loadTickets();
+      |     ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  581 |   }, []);
+  582 |
+  583 |   const handleCloseTicket = async (id) => {                       react-hooks/set-state-in-effect
+  588:14  error  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\pages\customer\CustomerPortal.jsx
+     1:8   error  'React' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-unused-vars
+     4:3   error  'FiGrid' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         no-unused-vars
+     4:19  error  'FiMapPin' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       no-unused-vars
+     4:38  error  'FiShoppingBag' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
+     5:3   error  'FiSettings' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     no-unused-vars
+     5:33  error  'FiMap' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-unused-vars
+     5:40  error  'FiCreditCard' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   no-unused-vars
+     5:54  error  'FiCheckCircle' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
+     6:21  error  'FiEdit3' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        no-unused-vars
+    19:10  error  'motion' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         no-unused-vars
+    27:11  error  'cartItems' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             no-unused-vars
+  1034:7   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  1032 |     const saved = localStorage.getItem('last_order_placed');
+  1033 |     if (saved) {
+> 1034 |       setOrder(JSON.parse(saved));
+       |       ^^^^^^^^ Avoid calling setState() directly within an effect
+  1035 |     }
+  1036 |     setLoaded(true);
+  1037 |   }, []);  react-hooks/set-state-in-effect
+  1105:25  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+  1103 |             <span style={{ fontSize: '13px', color: '#6B7280' }}>Estimated Delivery Date</span>
+  1104 |             <span style={{ fontSize: '13px', fontWeight: '500', color: '#111827' }}>
+> 1105 |               {new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: '2-digit' })}; 04:54pm
+       |                         ^^^^^^^^^^ Cannot call impure function
+  1106 |             </span>
+  1107 |           </div>
+  1108 |         </div>                                                                                                                                           react-hooks/purity
+  1202:16  error  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+  1212:32  error  'ErrorState' is not defined                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                no-undef
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\pages\public\AuthPages.jsx
+   38:7   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  36 |   React.useEffect(() => {
+  37 |     if (isRegister) {
+> 38 |       setRole(urlRole === 'vendor' ? 'vendor' : 'customer');
+     |       ^^^^^^^ Avoid calling setState() directly within an effect
+  39 |     } else {
+  40 |       setRole('customer');
+  41 |     }  react-hooks/set-state-in-effect
+  104:14  error  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
+  146:14  error  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
+  168:14  error  'error' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                no-unused-vars
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\pages\public\CategoriesBrands.jsx
+  1:8  error  'React' is defined but never used  no-unused-vars
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\pages\public\Deals.jsx
+   1:8  error  'React' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
+  20:5  error  Error: Cannot access variable before it is declared
+
+`fetchDeals` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  18 |
+  19 |   useEffect(() => {
+> 20 |     fetchDeals();
+     |     ^^^^^^^^^^ `fetchDeals` accessed before it is declared
+  21 |     
+  22 |     // Countdown timer logic
+  23 |     const timer = setInterval(() => {
+
+  41 |   }, []);
+  42 |
+> 43 |   const fetchDeals = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 44 |     try {
+     | ^^^^^^^^^
+> 45 |       setLoading(true);
+     ΓÇª
+     | ^^^^^^^^^
+> 54 |     }
+     | ^^^^^^^^^
+> 55 |   };
+     | ^^^^^ `fetchDeals` is declared here
+  56 |
+  57 |   const formatTime = (val) => val.toString().padStart(2, '0');
+  58 |  react-hooks/immutability
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\pages\public\Home.jsx
+   1:8   error  'React' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+   3:24  error  'FiMail' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           no-unused-vars
+  33:14  error  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              no-unused-vars
+  41:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  39 |
+  40 |   useEffect(() => {
+> 41 |     loadData();
+     |     ^^^^^^^^ Avoid calling setState() directly within an effect
+  42 |   }, []);
+  43 |
+  44 |   const handleNewsletterSubmit = (e) => {  react-hooks/set-state-in-effect
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\pages\public\ProductDetails.jsx
+    1:8   error    'React' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        no-unused-vars
+    3:50  error    'FiStar' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       no-unused-vars
+    3:58  error    'FiChevronLeft' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                no-unused-vars
+   61:14  error    'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-unused-vars
+   69:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  67 |
+  68 |   useEffect(() => {
+> 69 |     loadProductData();
+     |     ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  70 |   }, [id]);
+  71 |
+  72 |   const handleQtyChange = (type) => {  react-hooks/set-state-in-effect
+   70:6   warning  React Hook useEffect has a missing dependency: 'loadProductData'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       react-hooks/exhaustive-deps
+   99:13  error    'newReview' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           no-unused-vars
+  111:14  error    'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-unused-vars
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\pages\public\Shop.jsx
+   1:8   error  'React' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    no-unused-vars
+   3:51  error  'FiRefreshCw' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              no-unused-vars
+  54:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  52 |   useEffect(() => {
+  53 |     // Sync filter states from URL search parameters dynamically
+> 54 |     setSelectedCategory(urlCategory);
+     |     ^^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  55 |     setSelectedBrand(urlBrand);
+  56 |
+  57 |     // Reset other filters when a new category or brand query is received  react-hooks/set-state-in-effect
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\pages\public\StaticPages.jsx
+  1:8  error  'React' is defined but never used  no-unused-vars
+
+C:\Users\Softnova\Desktop\Shanmathi\Backend-project\frontend\src\pages\vendor\VendorPortal.jsx
+    1:8   error    'React' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 no-unused-vars
+    2:10  error    'Link' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
+    2:16  error    'useNavigate' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           no-unused-vars
+    4:3   error    'FiGrid' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                no-unused-vars
+    4:34  error    'FiTag' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 no-unused-vars
+    5:3   error    'FiStar' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                no-unused-vars
+    5:38  error    'FiCheck' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               no-unused-vars
+    5:52  error    'FiInfo' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                no-unused-vars
+   10:10  error    'productService' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        no-unused-vars
+   42:9   error    'maxSaleAmt' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   no-unused-vars
+  192:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  190 |
+  191 |   useEffect(() => {
+> 192 |     loadProducts();
+      |     ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  193 |   }, [user.id]);
+  194 |
+  195 |   const handleOpenAdd = () => {                           react-hooks/set-state-in-effect
+  193:6   warning  React Hook useEffect has a missing dependency: 'loadProducts'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   react-hooks/exhaustive-deps
+  287:16  error    'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   no-unused-vars
+  480:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  478 |
+  479 |   useEffect(() => {
+> 480 |     loadInventory();
+      |     ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  481 |   }, [user.id]);
+  482 |
+  483 |   const handleStockAdjust = async (p, amount) => {      react-hooks/set-state-in-effect
+  481:6   warning  React Hook useEffect has a missing dependency: 'loadInventory'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  react-hooks/exhaustive-deps
+  492:14  error    'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   no-unused-vars
+  561:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  559 |
+  560 |   useEffect(() => {
+> 561 |     loadOrders();
+      |     ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  562 |   }, [user.id]);
+  563 |
+  564 |   const handleUpdateStatus = async (orderId, newStatus) => {  react-hooks/set-state-in-effect
+  562:6   warning  React Hook useEffect has a missing dependency: 'loadOrders'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     react-hooks/exhaustive-deps
+  569:14  error    'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   no-unused-vars
+  659:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  657 |
+  658 |   useEffect(() => {
+> 659 |     loadCoupons();
+      |     ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  660 |   }, []);
+  661 |
+  662 |   const handleCreate = async (e) => {                              react-hooks/set-state-in-effect
+  674:14  error    'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   no-unused-vars
+  764:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  762 |
+  763 |   useEffect(() => {
+> 764 |     loadWallet();
+      |     ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  765 |   }, [user.id]);
+  766 |
+  767 |   const handleWithdrawalRequest = async (e) => {              react-hooks/set-state-in-effect
+  765:6   warning  React Hook useEffect has a missing dependency: 'loadWallet'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     react-hooks/exhaustive-deps
+  882:54  error    'FaStar' is not defined                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           no-undef
+
+Γ£û 123 problems (117 errors, 6 warnings)
+

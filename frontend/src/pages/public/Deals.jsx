@@ -16,6 +16,19 @@ export const Deals = () => {
     seconds: 59
   });
 
+  const fetchDeals = async () => {
+    try {
+      setLoading(true);
+      const data = await productService.getProducts();
+      const dealsOnly = data.filter(p => p.discount && p.discount > 0);
+      setProducts(dealsOnly);
+    } catch (err) {
+      console.error('Error fetching deals', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchDeals();
     
@@ -39,20 +52,6 @@ export const Deals = () => {
 
     return () => clearInterval(timer);
   }, []);
-
-  const fetchDeals = async () => {
-    try {
-      setLoading(true);
-      const data = await productService.getProducts();
-      // Filter only products with discount > 0
-      const dealsOnly = data.filter(p => p.discount && p.discount > 0);
-      setProducts(dealsOnly);
-    } catch (err) {
-      console.error('Error fetching deals', err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const formatTime = (val) => val.toString().padStart(2, '0');
 

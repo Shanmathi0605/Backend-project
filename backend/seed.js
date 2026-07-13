@@ -119,6 +119,7 @@ const seedData = async () => {
         },
         vendorId: vendor._id,
         vendorName: vendor.storeName,
+        isApproved: true,
         reviews: [
           { user: 'Sarah Connor', rating: 5, comment: 'Absolutely amazing noise reduction! Battery lasts forever.' },
           { user: 'Marcus Wright', rating: 4, comment: 'Very comfortable, but standard audio cable could be longer.' }
@@ -145,6 +146,7 @@ const seedData = async () => {
         },
         vendorId: vendor._id,
         vendorName: vendor.storeName,
+        isApproved: true,
         reviews: [
           { user: 'Danny G', rating: 5, comment: 'Feels like walking on clouds.' }
         ]
@@ -170,6 +172,7 @@ const seedData = async () => {
         },
         vendorId: vendor._id,
         vendorName: vendor.storeName,
+        isApproved: true,
         reviews: []
       }
     ];

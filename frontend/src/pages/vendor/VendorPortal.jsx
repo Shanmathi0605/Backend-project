@@ -4,6 +4,7 @@ import {
   FiGrid, FiShoppingBag, FiList, FiTag, FiTrendingUp, FiCreditCard,
   FiStar, FiPlus, FiTrash2, FiEdit2, FiCheck, FiX, FiInfo
 } from 'react-icons/fi';
+import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { vendorService } from '../../services/vendor';

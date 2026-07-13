@@ -14,6 +14,7 @@ import { productService } from '../../services/product';
 import ProductCard from '../../components/ProductCard/ProductCard';
 import Loader from '../../components/Loader/Loader';
 import EmptyState from '../../components/EmptyState/EmptyState';
+import ErrorState from '../../components/ErrorState/ErrorState';
 import { api } from '../../services/api';
 import styles from './CustomerPortal.module.css';
 import { motion } from 'framer-motion';
@@ -1102,7 +1103,7 @@ export const CustomerOrderSuccess = () => {
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span style={{ fontSize: '13px', color: '#6B7280' }}>Estimated Delivery Date</span>
             <span style={{ fontSize: '13px', fontWeight: '500', color: '#111827' }}>
-              {new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: '2-digit' })}; 04:54pm
+              {React.useMemo(() => new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: '2-digit' }), [])}; 04:54pm
             </span>
           </div>
         </div>
